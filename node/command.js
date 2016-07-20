@@ -12,7 +12,7 @@
             tempdir;
 
         cmd = cmd.trim();
-        console.log(process.env);
+        //console.log(process.env);
         if (isWin) {
             args = ["/c", cmd];
             cmd = "cmd.exe";

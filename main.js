@@ -1,7 +1,8 @@
+/*global brackets,define,$*/
 define(function (require, exports, module) {
     "use strict";
     
-    
+    //console.log(process.env);
     var CommandManager = brackets.getModule("command/CommandManager"),
         Menus          = brackets.getModule("command/Menus");
     
@@ -13,32 +14,32 @@ define(function (require, exports, module) {
         ShellDomain    = new NodeDomain("elmDomain",
                                      ExtensionUtils.getModulePath(module,
                                                     "node/command"));
-    
+        
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
     
-    var InfoPanel 		= require("modules/Info-Panel").InfoPanel;
-    var panel 			= new InfoPanel();
+    var InfoPanel = require("modules/info-panel").InfoPanel;
+    var panel = new InfoPanel();
     panel.init();
     panel.show();
     
     var buffer = "";
-    $(ShellDomain).on("stdout", function(evt, data) {
+    $(ShellDomain).on("stdout", function (evt, data) {
         buffer += data;
         panel.updateStatus("Success");
     });
 
-    $(ShellDomain).on("stderr", function(evt, data) {
+    $(ShellDomain).on("stderr", function (evt, data) {
         buffer += data;
         panel.updateStatus("Error");
     });
     
-    $(ShellDomain).on("finished", function(evt, data) {
+    $(ShellDomain).on("finished", function (evt, data) {
         panel.appendOutput(buffer);
         buffer = "";
     });
 
 
-    $(ShellDomain).on("clear", function() {
+    $(ShellDomain).on("clear", function () {
         
     });
 
@@ -51,15 +52,14 @@ define(function (require, exports, module) {
         ShellDomain.exec("execute",
                                  "elm-make --yes " + curOpenFile,
                                  curOpenDir,
-                                 brackets.platform === "win",
-                                 "cmd.exe");
+                                 brackets.platform === "win");
     }
 
 
     var build = "elm.buid";   // package-style naming to avoid collisions
     CommandManager.register("elm-make current file", build, handleBuild);
 
-    var menu = Menus.addMenu("Elm","foobarcode.elm");
+    var menu = Menus.addMenu("Elm", "foobarcode.elm");
     menu.addMenuItem(build);
     
     

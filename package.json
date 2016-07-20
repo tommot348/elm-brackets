@@ -1,10 +1,10 @@
 {
-    "name": "foobarcode.elm",
-    "title": "Elm support for Brackets",
+    "name": "tommot348.elm",
+    "title": "Elm support for Brackets (forked from lepinay/elm-brackets)",
     "description": "Syntax highlight and current file build with console output.",
     "homepage": "https://github.com/tommot348/elm-brackets",
-    "version": "1.2.0",
-    "author": "FooBarCode (http://foobarcode.me),tommot348 (https://github.com/tommot348)",
+    "version": "1.2.1",
+    "author": "tommot348 (https://github.com/tommot348)",
     "license": "MIT",
     "engines": {
         "brackets": ">=1.1.0"

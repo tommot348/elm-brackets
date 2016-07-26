@@ -22,7 +22,7 @@ Notes:
 Installation of elm binaries:
 - if you have npm and nodejs installed:
     - local : npm install elm
-    - global: npm install -g elm
+    - global: npm install -g elm  
     If you do a global installation on linux/mac(/windows?) you're most likely done.  
     If you do a local installation you will have to add the binary path to your "PATH"  
 - For windows and mac there are installers availiable on [elm-lang.org/install](http://elm-lang.org/install)  
@@ -33,7 +33,7 @@ elm-format installation:
 
 elm-oracle installation:  
 - local : npm install elm-oracle
-- global: npm install -g elm-oracle
+- global: npm install -g elm-oracle  
 If you do a global installation on linux/mac(/windows?) you're most likely done.  
 If you do a local installation you will have to add the binary path to your "PATH"  
 

@@ -3,7 +3,7 @@
     "title": "Elm support for Brackets (forked from lepinay/elm-brackets)",
     "description": "Syntax highlight and current file build with console output.",
     "homepage": "https://github.com/tommot348/elm-brackets",
-    "version": "1.3.2",
+    "version": "1.4.2",
     "author": "tommot348 (https://github.com/tommot348)",
     "license": "MIT",
     "engines": {

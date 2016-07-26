@@ -10,9 +10,9 @@ Currently support:
 - Quasilint (compiler output is used as lint)(does not fetch dependencies)
 - dependency install (via elm-package install)
 - elm-format support (see notes below roadmap)
+- elm-oracle support (see notes below roadmap)
 
 Roadmap:  
-- elm-oracle support
 - Package Manager
 - Preferences (configurable binary path, "build/format on save" option, etc)
 

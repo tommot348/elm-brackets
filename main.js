@@ -74,6 +74,7 @@ define(function (require, exports, module) {
     
     menu.addMenuItem(require("modules/build").command_id);
     menu.addMenuItem(require("modules/package-install").command_id);
+    menu.addMenuItem(require("modules/format").command_id);
 
     require("elm-mode");
 

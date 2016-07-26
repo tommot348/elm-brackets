@@ -92,10 +92,12 @@
         var cmd = "elm-package install -y " + pkg;
         _runCommand(cmd, cwd, isWin, "pkg_install");
     }
-    /**
-     * Initializes the test domain with several test commands.
-     * @param {DomainManager} domainManager The DomainManager for the server
-     */
+
+    function _format(file, cwd, isWin) {
+        var cmd = "elm-format -y " + file;
+        _runCommand(cmd, cwd, isWin, "format");
+    }
+
     function registerEvents(domainManager, prefix) {
         console.info("register " + prefix);
         domainManager.registerEvent("elmDomain",
@@ -114,6 +116,10 @@
             prefix + "finished", []);
     }
 
+     /**
+     * Initializes the domain
+     * @param {DomainManager} domainManager The DomainManager for the server
+     */
     function _init(domainManager) {
 
         if (!domainManager.hasDomain("elmDomain")) {
@@ -227,10 +233,35 @@
                     }
                 ]
             );
+            domainManager.registerCommand(
+                "elmDomain", // domain name
+                "format", // command name
+                _format, // command handler function
+                true, // isAsync
+                "Format source",
+                [
+                    {
+                        name: "file",
+                        type: "string",
+                        description: "file to be formantted"
+                    },
+                    {
+                        name: "cwd",
+                        type: "string",
+                        description: "Directory in which the command is executed"
+                    },
+                    {
+                        name: "isWin",
+                        type: "boolean",
+                        description: "Is Windows System ?"
+                    }
+                ]
+            );
             registerEvents(domainManager, "build");
             registerEvents(domainManager, "lint");
             registerEvents(domainManager, "hint");
             registerEvents(domainManager, "pkg_install");
+            registerEvents(domainManager, "format");
         }
         _domainManager = domainManager;
     }

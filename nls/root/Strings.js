@@ -64,7 +64,8 @@ define({
     "BASIC_ID"          :   "extension.brackets-builder",
     "MENU_ID"           :   "extension.brackets-builder.menu.id",
     "AUTO_ID"           :   "extension.brackets-builder.run.auto",
-    "BUILD_ID"          :   "extension.brackets-builder.run.build",
+    "BUILD_ID"          :   "elm.buid",
+    //"BUILD_ID"          :   "extension.brackets-builder.run.build",
     "RUN_ID"            :   "extension.brackets-builder.run.runCmd",
     "BUILD_RUN_ID"      :   "extension.brackets-builder.run.build-runCmd",
     "DEBUG_MODE_ID"     :   "extension.brackets-builder.menu.debug.id",
@@ -73,5 +74,5 @@ define({
     "SHOW_PANEL_ID"     :   "extension.brackets-builder.panel.show.id",
     "CONFIG_ID"         :   "extension.brackets-builder.configure.id",
     "SETTINGS_ID"       :   "",
-    "PANEL_ID"          :   "brackets-build-sys-panel",
+    "PANEL_ID"          :   "brackets-build-sys-panel"
 });

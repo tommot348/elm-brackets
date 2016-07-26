@@ -1,16 +1,17 @@
-"use strict";
+
 /*global brackets,define,$*/
 /* All functions related to panel and status */
 define(function (require, exports) {
-
+    "use strict";
     var WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         CommandManager = brackets.getModule("command/CommandManager"),
-        PreferencesManager = brackets.getModule('preferences/PreferencesManager');
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
 
-    var ExtensionStrings = require("./Strings");
+        ExtensionStrings = require("./Strings"),
 
-    var preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS);
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
 
+        EditorManager =  brackets.getModule("editor/EditorManager");
     function InfoPanel() {
         this.panelElement = null;
         this.panelContentElement = null;
@@ -19,9 +20,9 @@ define(function (require, exports) {
     }
 
     InfoPanel.prototype.init = function () {
-        var self = this;
-        var infoPanelHtml = require("text!../html/output-panel.html");
-        var debug = CommandManager.get(ExtensionStrings.DEBUG_ID);
+        var //self = this,
+            infoPanelHtml = require("text!../html/output-panel.html"),
+            debug = CommandManager.get(ExtensionStrings.DEBUG_ID);
 
         this.panelElement = $(infoPanelHtml);
         this.panelContentElement = $('.table tbody', this.panelElement);
@@ -36,12 +37,12 @@ define(function (require, exports) {
         this.status = $('#brackets-build-sys-status');
 
         CommandManager.register(ExtensionStrings.SHOW_PANEL, ExtensionStrings.SHOW_PANEL_ID, function () {
-            self.toggle();
-        });
+            this.toggle();
+        }.bind(this));
 
         $('.close', this.panelElement).on('click', function () {
-            self.hide();
-        });
+            this.hide();
+        }.bind(this));
 
         $('.build', this.panelElement).on('click', function () {
             CommandManager.execute(ExtensionStrings.BUILD_ID);
@@ -56,12 +57,16 @@ define(function (require, exports) {
         });
 
         $('.clear', this.panelElement).on('click', function () {
-            self.clear();
-        });
+            this.clear();
+        }.bind(this));
+
+
 
         this.status.on('click', function () {
-            self.toggle();
-        });
+            this.toggle();
+        }.bind(this));
+
+        //$()
 
     };
 
@@ -93,17 +98,24 @@ define(function (require, exports) {
         $(this.panelContentElement).html("");
         $(this.status).attr("class", ExtensionStrings.INACTIVE).attr("title", "Build System Status").text(ExtensionStrings.INACTIVE_MSG);
     };
-
+/*
     InfoPanel.prototype.appendText = function (text) {
         var currentHtml = $(this.panelContentElement).html();
         $(this.panelContentElement).html(currentHtml + text);
         this.scrollToBottom();
-    };
+    };*/
 
-    InfoPanel.prototype.appendOutput = function (text) {
-        var currentHtml = $(this.panelContentElement).html();
+    InfoPanel.prototype.appendOutput = function (text, line, column) {
+        var newElem = $("<tr data-line='" + line + "' data-column='" + column + "' style='display:table-row' class='build-sys-output'><td class='line-text'><pre class='build-sys-output-text'>" + text + "</pre><td></tr>");
+        line = line || "0";
+        column = column || "0";
+        newElem.click(function () {
+            var editor = EditorManager.getActiveEditor();
+            editor.setCursorPos(Number($(this).attr("data-line")) - 1, Number($(this).attr("data-column")) - 1, true);
+            editor.focus();
+        });
 
-        $(this.panelContentElement).html(currentHtml + "<tr style='display:table-row' class='build-sys-output'><td class='line-text'><pre class='build-sys-output-text'>" + text + "</pre><td></tr>");
+        $(this.panelContentElement).append(newElem);
 
         this.scrollToBottom();
     };

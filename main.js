@@ -1,71 +1,81 @@
 /*global brackets,define,$*/
 define(function (require, exports, module) {
     "use strict";
-    
+
     //console.log(process.env);
-    var CommandManager = brackets.getModule("command/CommandManager"),
-        Menus          = brackets.getModule("command/Menus");
-    
-    var DocumentManager     = brackets.getModule("document/DocumentManager");
-    
-    var ExtensionUtils      = brackets.getModule("utils/ExtensionUtils");
-    
-    var NodeDomain     = brackets.getModule("utils/NodeDomain"),
-        ShellDomain    = new NodeDomain("elmDomain",
-                                     ExtensionUtils.getModulePath(module,
-                                                    "node/command"));
-        
+    var Menus = brackets.getModule("command/Menus"),
+        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        NodeDomain = brackets.getModule("utils/NodeDomain"),
+        ElmDomain = new NodeDomain("elmDomain",
+            ExtensionUtils.getModulePath(module,
+                "node/elmDomain")),
+        InfoPanel = require("modules/info-panel").InfoPanel,
+        panel = new InfoPanel(),
+        buffer = "",
+        menu = Menus.addMenu("Elm", "tommot348.elm"),
+        LanguageManager = brackets.getModule("language/LanguageManager");
+    require("modules/lint");
+
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
-    
-    var InfoPanel = require("modules/info-panel").InfoPanel;
-    var panel = new InfoPanel();
+
     panel.init();
     panel.show();
-    
-    var buffer = "";
-    $(ShellDomain).on("stdout", function (evt, data) {
+
+    $(ElmDomain).on("buildout", function (evt, data) {
         buffer += data;
+
         panel.updateStatus("Success");
     });
 
-    $(ShellDomain).on("stderr", function (evt, data) {
+    $(ElmDomain).on("builderr", function (evt, data) {
         buffer += data;
+
+        ///TODO mark errors in code
         panel.updateStatus("Error");
     });
-    
-    $(ShellDomain).on("finished", function (evt, data) {
-        panel.appendOutput(buffer);
+
+    $(ElmDomain).on("buildfinished", function (evt, data) {
+        var error = buffer.substr(0, buffer.lastIndexOf("]") + 1),
+            message = buffer.substr(buffer.lastIndexOf("]") + 1, buffer.length - error.length).trim(),
+            errors = "";
+        panel.clear();
+        if (error.length) {
+            //console.log ( error );
+            errors = JSON.parse(error);
+            errors.forEach(function (elem) {
+                panel.appendOutput(elem.tag +
+                    "\n" +
+                    elem.overview +
+                    "\n" +
+                    elem.details,
+                    elem.region.start.line,
+                    elem.region.start.column);
+            });
+        }
+        if (message.length) {
+            panel.appendOutput(message);
+        }
+
         buffer = "";
     });
 
-
-    $(ShellDomain).on("clear", function () {
-        
+    $(ElmDomain).on("pkg_installout", function (evt, data) {
+        buffer += data;
     });
 
+    $(ElmDomain).on("pkg_installerr", function (evt, data) {
+        buffer += data;
+    });
 
-
-    function handleBuild() {
-        var curOpenDir  = DocumentManager.getCurrentDocument().file._parentPath;
-        var curOpenFile = DocumentManager.getCurrentDocument().file._path;
-        CommandManager.execute("file.saveAll");
-        ShellDomain.exec("execute",
-                                 "elm-make --yes " + curOpenFile,
-                                 curOpenDir,
-                                 brackets.platform === "win");
-    }
-
-
-    var build = "elm.buid";   // package-style naming to avoid collisions
-    CommandManager.register("elm-make current file", build, handleBuild);
-
-    var menu = Menus.addMenu("Elm", "foobarcode.elm");
-    menu.addMenuItem(build);
+    $(ElmDomain).on("pkg_installfinished", function (evt, data) {
+        panel.appendOutput(buffer);
+        buffer = "";
+    });
     
-    
+    menu.addMenuItem(require("modules/build").command_id);
+    menu.addMenuItem(require("modules/package-install").command_id);
+
     require("elm-mode");
-    
-    var LanguageManager = brackets.getModule("language/LanguageManager");
 
     LanguageManager.defineLanguage("elm", {
         name: "Elm",

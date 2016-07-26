@@ -26,7 +26,7 @@
         });
 
         child.stdout.on("data", function (data) {
-            console.log(data.toString());
+            //console.log(data.toString());
             if (data.toString().indexOf("[Y") > -1) {
                 try {
                     child.stdin.write("n" + os.EOL);
@@ -79,7 +79,7 @@
     }
 
     function _lint(file, cwd, isWin) {
-        var cmd = "elm-make --prepublish-core --report json " + file;
+        var cmd = "elm-make --report json " + file;
         _runCommand(cmd, cwd, isWin, "lint");
     }
 
@@ -94,7 +94,7 @@
     }
 
     function _format(file, cwd, isWin) {
-        var cmd = "elm-format -y " + file;
+        var cmd = "elm-format --yes " + file;
         _runCommand(cmd, cwd, isWin, "format");
     }
 

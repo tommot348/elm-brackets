@@ -12,9 +12,13 @@ define(function (require, exports, module) {
         InfoPanel = require("modules/info-panel").InfoPanel,
         panel = new InfoPanel(),
         buffer = "",
-        menu = Menus.addMenu("Elm", "tommot348.elm"),
+        //menu = Menus.addMenu("Elm", "tommot348.elm"),
         LanguageManager = brackets.getModule("language/LanguageManager");
     require("modules/lint");
+    require("modules/codeHint");
+    require("modules/build");
+    require("modules/package-install");
+    require("modules/format");
 
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
 
@@ -72,9 +76,22 @@ define(function (require, exports, module) {
         buffer = "";
     });
     
-    menu.addMenuItem(require("modules/build").command_id);
+    $(ElmDomain).on("formatout", function (evt, data) {
+        buffer += data;
+    });
+
+    $(ElmDomain).on("formaterr", function (evt, data) {
+        buffer += data;
+    });
+
+    $(ElmDomain).on("formatfinished", function (evt, data) {
+        panel.appendOutput(buffer);
+        buffer = "";
+    });
+
+   /* menu.addMenuItem(require("modules/build").command_id);
     menu.addMenuItem(require("modules/package-install").command_id);
-    menu.addMenuItem(require("modules/format").command_id);
+    menu.addMenuItem(require("modules/format").command_id);*/
 
     require("elm-mode");
 

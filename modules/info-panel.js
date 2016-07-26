@@ -21,8 +21,7 @@ define(function (require, exports) {
 
     InfoPanel.prototype.init = function () {
         var //self = this,
-            infoPanelHtml = require("text!../html/output-panel.html"),
-            debug = CommandManager.get(ExtensionStrings.DEBUG_ID);
+            infoPanelHtml = require("text!../html/output-panel.html");
 
         this.panelElement = $(infoPanelHtml);
         this.panelContentElement = $('.table tbody', this.panelElement);
@@ -48,12 +47,20 @@ define(function (require, exports) {
             CommandManager.execute(ExtensionStrings.BUILD_ID);
         });
 
-        $('.run', this.panelElement).on('click', function () {
+        /*$('.run', this.panelElement).on('click', function () {
             CommandManager.execute(ExtensionStrings.RUN_ID);
+        });*/
+
+        /*$('.config', this.panelElement).on('click', function () {
+            CommandManager.execute(ExtensionStrings.CONFIG_ID);
+        });*/
+
+        $('.pkg', this.panelElement).on('click', function () {
+            CommandManager.execute(ExtensionStrings.PKG_INSTALL_ID);
         });
 
-        $('.config', this.panelElement).on('click', function () {
-            CommandManager.execute(ExtensionStrings.CONFIG_ID);
+        $('.format', this.panelElement).on('click', function () {
+            CommandManager.execute(ExtensionStrings.FORMAT_ID);
         });
 
         $('.clear', this.panelElement).on('click', function () {

@@ -9,11 +9,11 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "node/elmDomain")),
-        InfoPanel = require("modules/info-panel").InfoPanel,
+        InfoPanel = require("UI/info-panel").InfoPanel,
         panel = new InfoPanel(),
         buffer = "",
-        //menu = Menus.addMenu("Elm", "tommot348.elm"),
         LanguageManager = brackets.getModule("language/LanguageManager");
+
     require("modules/lint");
     require("modules/codeHint");
     require("modules/build");
@@ -55,6 +55,9 @@ define(function (require, exports, module) {
                     elem.region.start.line,
                     elem.region.start.column);
             });
+            panel.updateStatus("error");
+        } else {
+            panel.updateStatus("success");
         }
         if (message.length) {
             panel.appendOutput(message);
@@ -88,10 +91,6 @@ define(function (require, exports, module) {
         panel.appendOutput(buffer);
         buffer = "";
     });
-
-   /* menu.addMenuItem(require("modules/build").command_id);
-    menu.addMenuItem(require("modules/package-install").command_id);
-    menu.addMenuItem(require("modules/format").command_id);*/
 
     require("elm-mode");
 

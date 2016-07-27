@@ -8,7 +8,7 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
-        command = "elm.format"; // package-style naming to avoid collisions
+        command = require("../config/IDs").FORMAT_ID; // package-style naming to avoid collisions
 
     function handleFormat() {
         var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,

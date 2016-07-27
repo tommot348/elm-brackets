@@ -8,7 +8,7 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
-        LINTER_NAME = "elmLint";
+        LINTER_NAME = require("../config/IDs").LINTER_NAME;
 
     function lint() {
         var response = new $.Deferred(),

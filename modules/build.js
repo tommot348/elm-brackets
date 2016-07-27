@@ -8,7 +8,7 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
-        build = "elm.buid"; // package-style naming to avoid collisions
+        build = require("../config/IDs").BUILD_ID; // package-style naming to avoid collisions
 
     function handleBuild() {
         var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,

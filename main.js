@@ -12,7 +12,8 @@ define(function (require, exports, module) {
         InfoPanel = require("UI/info-panel").InfoPanel,
         panel = new InfoPanel(),
         buffer = "",
-        LanguageManager = brackets.getModule("language/LanguageManager");
+        LanguageManager = brackets.getModule("language/LanguageManager"),
+        preferenceDialog = require("UI/preferenceDialog").preferenceDialog;
 
     require("modules/lint");
     require("modules/codeHint");
@@ -23,7 +24,9 @@ define(function (require, exports, module) {
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
 
     panel.init();
-    panel.show();
+    preferenceDialog.init();
+
+    //panel.show();
 
     $(ElmDomain).on("buildout", function (evt, data) {
         buffer += data;

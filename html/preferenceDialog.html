@@ -1,29 +1,65 @@
 <div id="elm-settings-dialog" class="modal">
     <div class="modal-header">
-        <h1 class="dialog-title">{{S.SETTINGS_DIALOG_HEADER}}</h1>
+        <h1 class="dialog-title">{{S.PREFERENCES_DIALOG_HEADER}}</h1>
     </div>
     <div class="modal-body tab-content">
         <table class="table table-condensed">
             <tr>
                 <th>
-
+                    {{S.PREFERENCES_THEAD}}
                 </th>
                 <th>
+                    {{S.VALUES_THEAD}}
                 </th>
             </tr>
 
             <tr>
                 <td>
-
+                    Use PATH or custom paths to the binaries?
                 </td>
                 <td>
-
+                    <label>
+                        <input type="radio" name="usePathOrCustom" id="pathRadio" value="path" checked>
+                        PATH
+                    </label>
+                    <label>
+                        <input type="radio" name="usePathOrCustom" id="customRadio" value="custom">
+                        custom paths
+                    </label>
                 </td>
             </tr>
-
+            <tr style="display: none" id="pathSettings">
+                <td>
+                    Custom paths
+                </td>
+                <td>
+                    <label>
+                        path to elm binaries <br>
+                        <input type="text" id="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button>
+                    </label>
+                    <label>
+                        path to elm-format binary <br>
+                        <input type="text" id="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button>
+                    </label>
+                    <label>
+                        path to elm-oracle binary <br>
+                        <input type="text" id="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>elm-make options</td><td></td>
+            </tr>
+            <tr>
+                <td>elm-fromat options</td><td></td>
+            </tr>
+            <tr>
+                <td>elm-oracle options</td><td></td>
+            </tr>
         </table>
     </div>
     <div class="modal-footer">
+        <button data-button-id="save" class="dialog-button btn btn-80">{{S.BUTTON_SAVE}}</button>
         <button data-button-id="close" class="dialog-button btn btn-80">{{S.BUTTON_CLOSE}}</button>
     </div>
 </div>

@@ -6,5 +6,6 @@ define({
     "FORMAT_ID"         :   "elm.format",
     "SHOW_PANEL_ID"     :   "extension.brackets-builder.panel.show.id",
     "PANEL_ID"          :   "brackets-build-sys-panel",
-    "LINTER_NAME"       :   "elmlint"
+    "LINTER_NAME"       :   "elmlint",
+    "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences"
 });

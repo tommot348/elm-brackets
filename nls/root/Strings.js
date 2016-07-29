@@ -33,7 +33,7 @@ define({
     
     //PANEL
     // General
-    "SHOW_PANEL"        :   "Show Results",
+    "SHOW_PANEL"        :   "Show Panel",
     "PANEL_HEADER"      :   "Elm related output",
 
     // Build Panel
@@ -56,6 +56,11 @@ define({
     "PROGRESS"          :   "Progressing",
     
     //SETTINGS DIALOG
+    //General
+    "SHOW_PREFERENCES_DIALOG":  "Show settings dialog",
+    //UI ELEMENTS
+    "PREFERENCES_DIALOG_HEADER" : "Elm settings",
     //BUTTONS
-    "BUTTON_CLOSE"      :   "Close"
+    "BUTTON_CLOSE"      :   "Close",
+    "BUTTON_SAVE"      :   "Close"
 });

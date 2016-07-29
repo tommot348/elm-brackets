@@ -5,12 +5,9 @@ define(function (require, exports) {
     "use strict";
     var WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         CommandManager = brackets.getModule("command/CommandManager"),
-        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
 
         ExtensionStrings = require("../config/Strings"),
         IDs = require("../config/IDs"),
-
-        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
 
         EditorManager =  brackets.getModule("editor/EditorManager"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
@@ -20,6 +17,7 @@ define(function (require, exports) {
         this.panelContentElement = null;
         this.panel = null;
         this.status = null;
+        this.isShown = false;
     }
 
     InfoPanel.prototype.init = function () {
@@ -62,6 +60,10 @@ define(function (require, exports) {
             this.clear();
         }.bind(this));
 
+        $('.preferences', this.panelElement).on('click', function () {
+            CommandManager.execute(IDs.SHOW_PREFERENCES_DIALOG_ID);
+        }.bind(this));
+
         this.status.on('click', function () {
             this.toggle();
         }.bind(this));
@@ -71,21 +73,23 @@ define(function (require, exports) {
     InfoPanel.prototype.show = function () {
         this.panel.show();
         CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(true);
-        preferences.set('showPanel', true);
-        preferences.save();
+        /*preferences.set('showPanel', true);
+        preferences.save();*/
+        this.isShown = true;
     };
 
     InfoPanel.prototype.hide = function () {
         this.panel.hide();
         CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(false);
-        preferences.set('showPanel', false);
-        preferences.save();
+        /*preferences.set('showPanel', false);
+        preferences.save();*/
+        this.isShown = false;
     };
 
     InfoPanel.prototype.toggle = function () {
-        var isShown = preferences.get('showPanel');
+       /* var isShown = preferences.get('showPanel');*/
 
-        if (isShown) {
+        if (this.isShown) {
             this.hide();
         } else {
             this.show();

@@ -79,7 +79,7 @@
     }
 
     function _lint(file, cwd, isWin) {
-        var cmd = "elm-make --report json " + file;
+        var cmd = "elm-make --report json --output " + isWin ? "nul " : "/dev/null " + file;
         _runCommand(cmd, cwd, isWin, "lint");
     }
 

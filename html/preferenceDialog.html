@@ -53,11 +53,11 @@
             </tr>
             <tr>
                 <td>output file name (default="index.html", .js will turn output into javascript)</td>
-                <td><input type="text" id="outputfile"></td>
+                <td><input type="text" id="buildout"></td>
             </tr>
             <tr>
                 <td>yes to all (unchecking this will cause build to fail if the dependencies are not installed via elm-package)</td>
-                <td><input type="checkbox" id="yes"></td>
+                <td><input type="checkbox" id="buildyes"></td>
             </tr>
             <tr>
                 <td>report format json/text</td>
@@ -75,7 +75,8 @@
                 <td><h2>elm-format options</h2></td><td></td>
             </tr>
             <tr>
-                <td><h2>elm-oracle options</h2></td><td></td>
+                <td>output file (default: [name of formatted file])</td>
+                <td><input type="text" id="formatout"></td>
             </tr>
         </table>
     </div>

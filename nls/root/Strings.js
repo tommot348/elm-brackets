@@ -60,7 +60,11 @@ define({
     "SHOW_PREFERENCES_DIALOG":  "Show settings dialog",
     //UI ELEMENTS
     "PREFERENCES_DIALOG_HEADER" : "Elm settings",
+    "PATHORCUSTOM" : "Use PATH or custom paths to the binaries?",
+    "ELMBINARY" : "path to elm binaries",
+    "ELMFORMAT" : "path to elm-format binary",
+    "ELMORACLE" : "path to elm-oracle binary",
     //BUTTONS
     "BUTTON_CLOSE"      :   "Close",
-    "BUTTON_SAVE"      :   "Close"
+    "BUTTON_SAVE"      :   "Save"
 });

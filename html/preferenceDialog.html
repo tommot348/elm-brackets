@@ -15,7 +15,7 @@
 
             <tr>
                 <td>
-                    Use PATH or custom paths to the binaries?
+                    {{S.PATHORCUSTOM}}
                 </td>
                 <td>
                     <label>
@@ -33,25 +33,46 @@
                     Custom paths
                 </td>
                 <td>
-                    <label>
-                        path to elm binaries <br>
-                        <input type="text" id="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button>
-                    </label>
-                    <label>
-                        path to elm-format binary <br>
-                        <input type="text" id="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button>
-                    </label>
-                    <label>
-                        path to elm-oracle binary <br>
-                        <input type="text" id="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button>
-                    </label>
                 </td>
             </tr>
             <tr>
-                <td>elm-make options</td><td></td>
+                <td>{{S.ELMBINARY}}</td>
+                <td><input type="text" id="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button></td>
             </tr>
             <tr>
-                <td>elm-fromat options</td><td></td>
+                <td>{{S.ELMFORMAT}}</td>
+                <td><input type="text" id="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button></td>
+            </tr>
+            <tr>
+                <td>{{S.ELMORACLE}}</td>
+                <td><input type="text" id="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button></td>
+            </tr>
+            <tr>
+                <td>elm-make options</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>output file name (default="index.html", .js will turn output into javascript)</td>
+                <td><input type="text" id="outputfile"></td>
+            </tr>
+            <tr>
+                <td>yes to all (unchecking this will cause build to fail if the dependencies are not installed via elm-package)</td>
+                <td><input type="checkbox" id="yes"></td>
+            </tr>
+            <tr>
+                <td>report format json/text</td>
+                <td><label>json<input type="radio" id="reportformatjson" name ="reportformat" checked></label><label>text<input type="radio" id="reportformattext" name="reportformat"></label></td>
+            </tr>
+            <tr>
+                <td>show warnings?</td>
+                <td><input type="checkbox" id="warn"></td>
+            </tr>
+            <tr>
+                <td>docs output file</td>
+                <td><input type="text" id="docsoutputfile"></td>
+            </tr>
+            <tr>
+                <td>elm-format options</td><td></td>
             </tr>
             <tr>
                 <td>elm-oracle options</td><td></td>

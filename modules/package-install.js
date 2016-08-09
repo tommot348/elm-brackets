@@ -8,6 +8,9 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        ExtensionStrings = require("../config/Strings"),
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         command = require("../config/IDs").PKG_INSTALL_ID; // package-style naming to avoid collisions
 
     function handlePkg_install(pkg) {
@@ -18,7 +21,8 @@ define(function (require, exports, module) {
         ElmDomain.exec("pkg_install",
             pkg,
             curOpenDir,
-            brackets.platform === "win");
+            brackets.platform === "win",
+            preferences);
     }
 
     CommandManager.register("elm-package install", command, handlePkg_install);

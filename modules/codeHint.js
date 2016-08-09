@@ -7,6 +7,9 @@ define(function (require, exports, module) {
         NodeDomain = brackets.getModule("utils/NodeDomain"),
         CodeHintManager = brackets.getModule("editor/CodeHintManager"),
         TokenUtils = brackets.getModule("utils/TokenUtils"),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        ExtensionStrings = require("../config/Strings"),
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain"));
@@ -41,7 +44,8 @@ define(function (require, exports, module) {
             activeToken.token.string,
             curOpenFile,
             curOpenDir,
-            brackets.platform === "win");
+            brackets.platform === "win",
+            preferences);
         $(ElmDomain).on("hintout", function (evt, data) {
             buffer += data;
         });

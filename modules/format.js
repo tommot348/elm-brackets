@@ -8,6 +8,9 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        ExtensionStrings = require("../config/Strings"),
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         command = require("../config/IDs").FORMAT_ID; // package-style naming to avoid collisions
 
     function handleFormat() {
@@ -17,7 +20,8 @@ define(function (require, exports, module) {
         ElmDomain.exec("format",
             curOpenFile,
             curOpenDir,
-            brackets.platform === "win"
+            brackets.platform === "win",
+            preferences
                       );
 
     }

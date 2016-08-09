@@ -1,4 +1,5 @@
 /*jslint node: true*/
+/*global brackets*/
 (function () {
     "use strict";
 
@@ -73,28 +74,55 @@
         });
     }
 
-    function _build(file, cwd, isWin) {
-        var cmd = "elm-make --yes --report json " + file;
+    function _build(file, cwd, isWin, preferences) {
+
+        var usePATH = preferences.usePathOrCustom === "path";
+
+        var binpath = !usePATH ? preferences.elmBinary + "/" : "";
+
+        var yes = preferences.buildyes;
+
+        var filename = preferences.buildout;
+
+        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + "--report json " + ((filename.length > 0) ? ("--output " + filename + " ") : " ") + file;
+        console.log(cmd);
         _runCommand(cmd, cwd, isWin, "build");
     }
 
-    function _lint(file, cwd, isWin) {
-        var cmd = "elm-make --report json --output " + isWin ? "nul " : "/dev/null " + file;
+    function _docs(file, cwd, isWin, preferences) {
+        var usePATH = preferences.usePathOrCustom === "path",
+            binpath = !usePATH ? preferences.elmBinary + "/" : "",
+            pref = preferences.docsoutputfile,
+            docname = pref.length > 0 ? pref : file + "-docs.js",
+            cmd = binpath + "elm-make --yes --output " + isWin ? "nul " : "/dev/null " + "--docs " + docname;
+    }
+
+    function _lint(file, cwd, isWin, preferences) {
+        var usePATH = preferences.usePathOrCustom === "path",
+            binpath = !usePATH ? preferences.elmBinary + "/" : "",
+            cmd = binpath + "elm-make --warn --report json --output " + isWin ? "nul " : "/dev/null " + file;
         _runCommand(cmd, cwd, isWin, "lint");
     }
 
-    function _codeHint(str, file, cwd, isWin) {
-        var cmd = "elm-oracle " + file + " " + str;
+    function _codeHint(str, file, cwd, isWin, preferences) {
+        var usePATH = preferences.usePathOrCustom === "path",
+            binpath = !usePATH ? preferences["elm-oracleBinary"] + "/" : "",
+            cmd = binpath + "elm-oracle " + file + " " + str;
         _runCommand(cmd, cwd, isWin, "hint");
     }
 
-    function _pkg_install(pkg, cwd, isWin) {
-        var cmd = "elm-package install -y " + pkg;
+    function _pkg_install(pkg, cwd, isWin, preferences) {
+        var usePATH = preferences.usePathOrCustom === "path",
+            binpath = !usePATH ? preferences.elmBinary + "/" : "",
+            cmd = binpath + "elm-package install -y " + pkg;
         _runCommand(cmd, cwd, isWin, "pkg_install");
     }
 
-    function _format(file, cwd, isWin) {
-        var cmd = "elm-format --yes " + file;
+    function _format(file, cwd, isWin, preferences) {
+        var usePATH = preferences.usePathOrCustom === "path",
+            binpath = !usePATH ? preferences["elm-formatBinary"] + "/" : "",
+            yes = preferences.formatyes,
+            cmd = binpath + "elm-format " + yes ? "--yes" : " " + " " + file;
         _runCommand(cmd, cwd, isWin, "format");
     }
 
@@ -150,6 +178,11 @@
                         name: "isWin",
                         type: "boolean",
                         description: "Is Windows System ?"
+                    },
+                    {
+                        name: "preferences",
+                        type: "object",
+                        description: "brackets preferences"
                     }
                 ]
             );
@@ -175,6 +208,11 @@
                         name: "isWin",
                         type: "boolean",
                         description: "Is Windows System ?"
+                    },
+                    {
+                        name: "preferences",
+                        type: "object",
+                        description: "brackets preferences"
                     }
                 ]
             );
@@ -205,6 +243,11 @@
                         name: "isWin",
                         type: "boolean",
                         description: "Is Windows System ?"
+                    },
+                    {
+                        name: "preferences",
+                        type: "object",
+                        description: "brackets preferences"
                     }
                 ]
             );
@@ -230,6 +273,11 @@
                         name: "isWin",
                         type: "boolean",
                         description: "Is Windows System ?"
+                    },
+                    {
+                        name: "preferences",
+                        type: "object",
+                        description: "brackets preferences"
                     }
                 ]
             );
@@ -254,6 +302,11 @@
                         name: "isWin",
                         type: "boolean",
                         description: "Is Windows System ?"
+                    },
+                    {
+                        name: "preferences",
+                        type: "object",
+                        description: "brackets preferences"
                     }
                 ]
             );

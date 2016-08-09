@@ -8,6 +8,9 @@ define(function (require, exports, module) {
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        ExtensionStrings = require("../config/Strings"),
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         LINTER_NAME = require("../config/IDs").LINTER_NAME;
 
     function lint() {
@@ -19,7 +22,8 @@ define(function (require, exports, module) {
         ElmDomain.exec("lint",
             curOpenFile,
             curOpenDir,
-            brackets.platform === "win");
+            brackets.platform === "win",
+            preferences);
         $(ElmDomain).on("lintout", function (evt, data) {
             buffer += data;
         });

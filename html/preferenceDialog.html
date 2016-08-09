@@ -28,60 +28,65 @@
                     </label>
                 </td>
             </tr>
-            <tr style="display: none" id="pathSettings">
+        </table>
+        <table style="display: none" id="pathSettings">
+            <tr>
                 <td>
-                    <h1>Custom paths</h1>
+                    <h2>Custom paths</h2>
                 </td>
                 <td>
                 </td>
             </tr>
             <tr>
                 <td>{{S.ELMBINARY}}</td>
-                <td><input type="text" id="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button></td>
+                <td><input type="text" id="elmBinary" name="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button></td>
             </tr>
             <tr>
                 <td>{{S.ELMFORMAT}}</td>
-                <td><input type="text" id="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button></td>
+                <td><input type="text" id="elm-formatBinary" name="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button></td>
             </tr>
             <tr>
                 <td>{{S.ELMORACLE}}</td>
-                <td><input type="text" id="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button></td>
+                <td><input type="text" id="elm-oracleBinary" name="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button></td>
             </tr>
+        </table>
+        <table>
             <tr>
                 <td><h2>elm-make options</h2></td>
                 <td></td>
             </tr>
             <tr>
                 <td>output file name (default="index.html", .js will turn output into javascript)</td>
-                <td><input type="text" id="buildout"></td>
+                <td><input type="text" id="buildout" name="buildout"></td>
+            </tr>
+            <tr>
+                <td>docs output file (default="[filename]-docs.js")</td>
+                <td><input type="text" id="docsoutputfile" name="docsoutputfile"></td>
             </tr>
             <tr>
                 <td>yes to all (unchecking this will cause build to fail if the dependencies are not installed via elm-package)</td>
-                <td><input type="checkbox" id="buildyes"></td>
+                <td><input type="checkbox" id="buildyes" name="buildyes" value="yes"></td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td>report format json/text</td>
-                <td><label><input type="radio" id="reportformatjson" name ="reportformat" checked> json</label><label><input type="radio" id="reportformattext" name="reportformat"> text</label></td>
-            </tr>
+                <td><label><input type="radio" id="reportformatjson" name="reportformat" value="json" checked> json</label><label><input type="radio" id="reportformattext" name="reportformat" value="text">text</label></td>
+            </tr>-->
             <tr>
                 <td>show warnings?</td>
-                <td><input type="checkbox" id="warn"></td>
+                <td><input type="checkbox" id="warn" name="warn" value="yes"></td>
             </tr>
-            <tr>
-                <td>docs output file</td>
-                <td><input type="text" id="docsoutputfile"></td>
-            </tr>
+
             <tr>
                 <td><h2>elm-format options</h2></td><td></td>
             </tr>
             <tr>
                 <td>output file (default: [name of formatted file])</td>
-                <td><input type="text" id="formatout"></td>
+                <td><input type="text" id="formatout" name="formatout"></td>
             </tr>
         </table>
     </div>
     <div class="modal-footer">
-        <button data-button-id="save" class="dialog-button btn btn-80">{{S.BUTTON_SAVE}}</button>
+        <button data-button-id="save" class="dialog-button btn btn-80" id="savebutton">{{S.BUTTON_SAVE}}</button>
         <button data-button-id="close" class="dialog-button btn btn-80">{{S.BUTTON_CLOSE}}</button>
     </div>
 </div>

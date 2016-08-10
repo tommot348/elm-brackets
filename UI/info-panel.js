@@ -41,6 +41,8 @@ define(function (require, exports) {
         }.bind(this));
 
         $('.close', this.panelElement).on('click', function () {
+            $('#elm-toolbar-icon').toggleClass("on");
+            $('#elm-toolbar-icon').toggleClass("off");
             this.hide();
         }.bind(this));
 

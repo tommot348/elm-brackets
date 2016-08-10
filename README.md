@@ -17,7 +17,6 @@ Then install the extension named: "Elm support for Brackets (forked from lepinay
 - Elm Package Manager GUI
 
 
-elm binaries have to be in PATH for this to work (see notes)  
 #### Notes:
 ##### Installation of elm binaries:
 - if you have npm and nodejs installed:
@@ -25,7 +24,7 @@ elm binaries have to be in PATH for this to work (see notes)
     - global: npm install -g elm  
     
     If you do a global installation on linux/mac(/windows?) you're most likely done.  
-If you do a local installation you will have to add the binary path to your "PATH"  
+If you do a local installation you will have to add the binary path to your "PATH" or set the path in the settings dialog 
 - For windows and mac there are installers availiable on [elm-lang.org/install](http://elm-lang.org/install)  
 
 ##### elm-format installation:  
@@ -37,7 +36,7 @@ If you do a local installation you will have to add the binary path to your "PAT
 - global: npm install -g elm-oracle  
 
     If you do a global installation on linux/mac(/windows?) you're most likely done.  
-If you do a local installation you will have to add the binary path to your "PATH"  
+If you do a local installation you will have to add the binary path to your "PATH" or set the path in the settings dialog  
 
 ##### Setting your PATH  
 - mac: edit /etc/launchd.conf

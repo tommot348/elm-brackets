@@ -21,6 +21,8 @@ define(function (require, exports, module) {
     require("modules/package-install");
     require("modules/format");
 
+    require("config/preferences");
+
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
 
     panel.init();

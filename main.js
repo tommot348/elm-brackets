@@ -13,20 +13,30 @@ define(function (require, exports, module) {
         panel = new InfoPanel(),
         buffer = "",
         LanguageManager = brackets.getModule("language/LanguageManager"),
-        preferenceDialog = require("UI/preferenceDialog").preferenceDialog;
+        preferenceDialog = require("UI/preferenceDialog").preferenceDialog,
+        icon = $("<a id='elm-toolbar-icon' href='#'></a>")
+            .attr("title", "elm")
+            .addClass("off")
+            .appendTo($("#main-toolbar .buttons"))
+            .click(function () {
+                panel.toggle();
+                $(this).toggleClass("off");
+                $(this).toggleClass("on");
+            });
 
     require("modules/lint");
     require("modules/codeHint");
     require("modules/build");
     require("modules/package-install");
     require("modules/format");
-
     require("config/preferences");
 
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
+    ExtensionUtils.loadStyleSheet(module, "styles/icon.less");
 
     panel.init();
     preferenceDialog.init();
+
 
     //panel.show();
 

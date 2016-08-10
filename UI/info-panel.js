@@ -41,8 +41,7 @@ define(function (require, exports) {
         }.bind(this));
 
         $('.close', this.panelElement).on('click', function () {
-            $('#elm-toolbar-icon').toggleClass("on");
-            $('#elm-toolbar-icon').toggleClass("off");
+
             this.hide();
         }.bind(this));
 
@@ -75,22 +74,20 @@ define(function (require, exports) {
     InfoPanel.prototype.show = function () {
         this.panel.show();
         CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(true);
-        /*preferences.set('showPanel', true);
-        preferences.save();*/
+        $('#elm-toolbar-icon').toggleClass("on");
+        $('#elm-toolbar-icon').toggleClass("off");
         this.isShown = true;
     };
 
     InfoPanel.prototype.hide = function () {
         this.panel.hide();
         CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(false);
-        /*preferences.set('showPanel', false);
-        preferences.save();*/
+        $('#elm-toolbar-icon').toggleClass("on");
+        $('#elm-toolbar-icon').toggleClass("off");
         this.isShown = false;
     };
 
     InfoPanel.prototype.toggle = function () {
-       /* var isShown = preferences.get('showPanel');*/
-
         if (this.isShown) {
             this.hide();
         } else {

@@ -20,8 +20,6 @@ define(function (require, exports, module) {
             .appendTo($("#main-toolbar .buttons"))
             .click(function () {
                 panel.toggle();
-                $(this).toggleClass("off");
-                $(this).toggleClass("on");
             });
 
     require("modules/lint");

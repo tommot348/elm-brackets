@@ -11,10 +11,11 @@ Then install the extension named: "Elm support for Brackets (forked from lepinay
 - dependency install (via elm-package install)
 - elm-format support (see notes below roadmap)
 - elm-oracle support (= autocomplete; see notes below roadmap)
+- Preferences (configurable binary path, options, etc)
 
 #### Roadmap:  
 - Elm Package Manager GUI
-- Preferences (configurable binary path, "build/format on save" option, etc)
+
 
 elm binaries have to be in PATH for this to work (see notes)  
 #### Notes:

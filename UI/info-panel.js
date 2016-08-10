@@ -32,9 +32,9 @@ define(function (require, exports) {
             this.panelElement
         );
 
-        $("#status-language").before('<div class="' + ExtensionStrings.INACTIVE + '" id="brackets-build-sys-status" title="' + ExtensionStrings.STATUSBAR_NAME + '">' + ExtensionStrings.INACTIVE_MSG + '</div>');
+        $("#status-language").before('<div class="' + ExtensionStrings.INACTIVE + '" id="elm-status" title="' + ExtensionStrings.STATUSBAR_NAME + '">' + ExtensionStrings.INACTIVE_MSG + '</div>');
 
-        this.status = $('#brackets-build-sys-status');
+        this.status = $('#elm-status');
 
         CommandManager.register(ExtensionStrings.SHOW_PANEL, IDs.SHOW_PANEL_ID, function () {
             this.toggle();
@@ -102,7 +102,7 @@ define(function (require, exports) {
     };
 
     InfoPanel.prototype.appendOutput = function (text, line, column) {
-        var newElem = $("<tr data-line='" + line + "' data-column='" + column + "' style='display:table-row' class='build-sys-output'><td class='line-text'><pre class='build-sys-output-text'>" + text + "</pre><td></tr>");
+        var newElem = $("<tr data-line='" + line + "' data-column='" + column + "' style='display:table-row' class='elm-output'><td class='line-text'><pre class='elm-text'>" + text + "</pre><td></tr>");
         line = line || "0";
         column = column || "0";
         newElem.click(function () {

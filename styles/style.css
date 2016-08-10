@@ -1,47 +1,47 @@
-#brackets-build-sys-status {
+#elm-status {
   transition: background-color 0.5s;
   display: block;
 }
 
-#brackets-build-sys-status.Inactive {
+#elm-status.Inactive {
   
 }
 
-#brackets-build-sys-status.Inactive:hover {
+#elm-status.Inactive:hover {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-#brackets-build-sys-status.Finished {
+#elm-status.Finished {
   background-color: rgba(145, 204, 65, 0.7);
 }
 
-#brackets-build-sys-status.Finished:hover {
+#elm-status.Finished:hover {
   background-color: rgba(145, 204, 65, 0.4);
 }
 
-#brackets-build-sys-status.Error {
+#elm-status.Error {
   background-color: rgba(247, 70, 135, 0.7);
 }
 
-#brackets-build-sys-status.Error:hover {
+#elm-status.Error:hover {
   background-color: rgba(247, 70, 135, 0.4);
 }
 
-#brackets-build-sys-status.Progressing {
+#elm-status.Progressing {
   background-color: rgba(120, 178, 242, 0.7);
 }
 
-#brackets-build-sys-status.Progressing:hover {
+#elm-status.Progressing:hover {
   background-color: rgba(120, 178, 242, 0.4);
 }
 
-#brackets-build-sys-panel .tools {
+#elm-panel .tools {
   position: absolute;
   bottom: 1.5px;
   right: 50px;
 }
 
-.build-sys-output .build-sys-output-text {
+.elm-output .elm-text {
   margin: 0;
   padding: 0 0 0 20px;
   color: inherit;

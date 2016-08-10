@@ -45,7 +45,8 @@ define(function (require, exports, module) {
             curOpenFile,
             curOpenDir,
             brackets.platform === "win",
-            preferences);
+            preferences.get("elm-oracleBinary"),
+            preferences.get("usePathOrCustom") === "path");
         $(ElmDomain).on("hintout", function (evt, data) {
             buffer += data;
         });

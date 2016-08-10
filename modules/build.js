@@ -15,19 +15,17 @@ define(function (require, exports, module) {
 
     function handleBuild() {
         var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
-            curOpenFile = DocumentManager.getCurrentDocument().file._path,
-            myPrefs={};
-        myPrefs.usePathOrCustom=preferences.get("usePathOrCustom");
-        myPrefs.buildyes=preferences.get("buildyes");
-        myPrefs.elmBinary=preferences.get("elmBinary");
-        myPrefs.buildout=preferences.get("buildout");
+            curOpenFile = DocumentManager.getCurrentDocument().file._path;
         CommandManager.execute("file.saveAll");
-        console.log("bla");
         ElmDomain.exec("build",
             curOpenFile,
             curOpenDir,
             brackets.platform === "win",
-            myPrefs);
+            preferences.get("elmBinary"),
+            preferences.get("usePathOrCustom") === "path",
+            preferences.get("buildyes"),
+            preferences.get("buildout"),
+            preferences.get("warn"));
     }
 
     CommandManager.register("elm-make current file", build, handleBuild);

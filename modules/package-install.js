@@ -22,7 +22,8 @@ define(function (require, exports, module) {
             pkg,
             curOpenDir,
             brackets.platform === "win",
-            preferences);
+            preferences.get("elmBinary"),
+            preferences.get("usePathOrCustom") === "path");
     }
 
     CommandManager.register("elm-package install", command, handlePkg_install);

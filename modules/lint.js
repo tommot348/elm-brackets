@@ -23,7 +23,8 @@ define(function (require, exports, module) {
             curOpenFile,
             curOpenDir,
             brackets.platform === "win",
-            preferences);
+            preferences.get("elmBinary"),
+            preferences.get("usePathOrCustom") === "path");
         $(ElmDomain).on("lintout", function (evt, data) {
             buffer += data;
         });

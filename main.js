@@ -15,7 +15,7 @@ define(function (require, exports, module) {
         LanguageManager = brackets.getModule("language/LanguageManager"),
         preferenceDialog = require("UI/preferenceDialog").preferenceDialog;
 
-    //require("modules/lint");
+    require("modules/lint");
     require("modules/codeHint");
     require("modules/build");
     require("modules/package-install");

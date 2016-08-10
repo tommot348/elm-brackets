@@ -20,7 +20,7 @@
             args = ["-c", cmd];
             cmd = process.env.SHELL;
         }
-
+        console.log(JSON.stringify(args));
         child = spawn(cmd, args, {
             cwd: cwd,
             env: process.env
@@ -74,55 +74,41 @@
         });
     }
 
-    function _build(file, cwd, isWin, preferences) {
-
-        var usePATH = preferences.usePathOrCustom === "path";
-
-        var binpath = !usePATH ? preferences.elmBinary + "/" : "";
-
-        var yes = preferences.buildyes;
-
-        var filename = preferences.buildout;
-
-        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + "--report json " + ((filename.length > 0) ? ("--output " + filename + " ") : " ") + file;
-        console.log(cmd);
+    function _build(file, cwd, isWin, binaryPath, usePATH, yes, out, warn) {
+        var binpath = !usePATH ? binaryPath + "/" : "";
+        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + ((out.length > 0) ? ("--output " + out + " ") : " ") + (warn ? "--warn " : " ") + "--report json " +  file;
         _runCommand(cmd, cwd, isWin, "build");
     }
 
-    function _docs(file, cwd, isWin, preferences) {
-        var usePATH = preferences.usePathOrCustom === "path",
-            binpath = !usePATH ? preferences.elmBinary + "/" : "",
-            pref = preferences.docsoutputfile,
-            docname = pref.length > 0 ? pref : file + "-docs.js",
-            cmd = binpath + "elm-make --yes --output " + isWin ? "nul " : "/dev/null " + "--docs " + docname;
+    function _docs(file, cwd, isWin, binaryPath, usePATH, docname) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
+            cmd;
+        docname = docname.length > 0 ? docname : file + "-docs.js";
+        cmd = binpath + "elm-make --yes --output " + (isWin ? "nul " : "/dev/null ") + "--docs " + docname;
+
     }
 
-    function _lint(file, cwd, isWin, preferences) {
-        var usePATH = preferences.usePathOrCustom === "path",
-            binpath = !usePATH ? preferences.elmBinary + "/" : "",
-            cmd = binpath + "elm-make --warn --report json --output " + isWin ? "nul " : "/dev/null " + file;
+    function _lint(file, cwd, isWin, binaryPath, usePATH) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
+            cmd = binpath + "elm-make --warn --report json --output " + (isWin ? "nul " : "/dev/null ") + file;
         _runCommand(cmd, cwd, isWin, "lint");
     }
 
-    function _codeHint(str, file, cwd, isWin, preferences) {
-        var usePATH = preferences.usePathOrCustom === "path",
-            binpath = !usePATH ? preferences["elm-oracleBinary"] + "/" : "",
+    function _codeHint(str, file, cwd, isWin, binaryPath, usePATH) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-oracle " + file + " " + str;
         _runCommand(cmd, cwd, isWin, "hint");
     }
 
-    function _pkg_install(pkg, cwd, isWin, preferences) {
-        var usePATH = preferences.usePathOrCustom === "path",
-            binpath = !usePATH ? preferences.elmBinary + "/" : "",
+    function _pkg_install(pkg, cwd, isWin, binaryPath, usePATH) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-package install -y " + pkg;
         _runCommand(cmd, cwd, isWin, "pkg_install");
     }
 
-    function _format(file, cwd, isWin, preferences) {
-        var usePATH = preferences.usePathOrCustom === "path",
-            binpath = !usePATH ? preferences["elm-formatBinary"] + "/" : "",
-            yes = preferences.formatyes,
-            cmd = binpath + "elm-format " + yes ? "--yes" : " " + " " + file;
+    function _format(file, cwd, isWin, binaryPath, usePATH, out, yes) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
+            cmd = binpath + "elm-format " + (yes ? "--yes " : " ") + (out.length > 0 ? "--output " + out + " " : " ") + file;
         _runCommand(cmd, cwd, isWin, "format");
     }
 
@@ -180,9 +166,29 @@
                         description: "Is Windows System ?"
                     },
                     {
-                        name: "preferences",
-                        type: "object",
-                        description: "brackets preferences"
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "yes",
+                        type: "boolean",
+                        description: "flag to set \"yes to all\" "
+                    },
+                    {
+                        name: "out",
+                        type: "string",
+                        description: "output file name"
+                    },
+                    {
+                        name: "warn",
+                        type: "boolean",
+                        description: "flag to activate warnings"
                     }
                 ]
             );
@@ -210,9 +216,14 @@
                         description: "Is Windows System ?"
                     },
                     {
-                        name: "preferences",
-                        type: "object",
-                        description: "brackets preferences"
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
                     }
                 ]
             );
@@ -245,9 +256,14 @@
                         description: "Is Windows System ?"
                     },
                     {
-                        name: "preferences",
-                        type: "object",
-                        description: "brackets preferences"
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
                     }
                 ]
             );
@@ -275,9 +291,14 @@
                         description: "Is Windows System ?"
                     },
                     {
-                        name: "preferences",
-                        type: "object",
-                        description: "brackets preferences"
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
                     }
                 ]
             );
@@ -304,9 +325,24 @@
                         description: "Is Windows System ?"
                     },
                     {
-                        name: "preferences",
-                        type: "object",
-                        description: "brackets preferences"
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "out",
+                        type: "string",
+                        description: "output file name"
+                    },
+                    {
+                        name: "yes",
+                        type: "boolean",
+                        description: "flag to set \"yes to all\""
                     }
                 ]
             );

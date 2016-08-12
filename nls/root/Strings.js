@@ -48,6 +48,7 @@ define({
     "FORMAT_HOVER"      :   "Format current file",
     "PKG_INSTALL_HOVER" :   "Install all dependencies for current file",
     "PREFERENCES_HOVER" :   "Open settings dialog",
+    "PACKAGE_MANAGER_HOVER" :   "Open package manager",
     
     // Status
     "STATUSBAR_NAME"    :   "Elm Build Status",
@@ -58,12 +59,18 @@ define({
     //SETTINGS DIALOG
     //General
     "SHOW_PREFERENCES_DIALOG":  "Show settings dialog",
+
     //UI ELEMENTS
     "PREFERENCES_DIALOG_HEADER" : "Elm settings",
     "PATHORCUSTOM" : "Use PATH or custom paths to the binaries?",
     "ELMBINARY" : "path to elm binaries",
     "ELMFORMAT" : "path to elm-format binary",
     "ELMORACLE" : "path to elm-oracle binary",
+
+    //Package Manager
+    "SHOW_PACKAGE_MANAGER":  "Show package manager",
+
+    //Multi Purpose UI elements
     //BUTTONS
     "BUTTON_CLOSE"      :   "Close",
     "BUTTON_SAVE"      :   "Save"

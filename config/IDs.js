@@ -7,5 +7,6 @@ define({
     "SHOW_PANEL_ID"     :   "extension.elm.panel.show.id",
     "PANEL_ID"          :   "elm-panel",
     "LINTER_NAME"       :   "elmlint",
-    "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences"
+    "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences",
+    "SHOW_PACKAGE_MANAGER_ID" : "elm.show_package_manager"
 });

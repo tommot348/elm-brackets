@@ -14,6 +14,7 @@ define(function (require, exports, module) {
         buffer = "",
         LanguageManager = brackets.getModule("language/LanguageManager"),
         preferenceDialog = require("UI/preferenceDialog").preferenceDialog,
+        packageManager = require("UI/packageManager").packageManager,
         icon = $("<a id='elm-toolbar-icon' href='#'></a>")
             .attr("title", "elm")
             .addClass("off")
@@ -34,7 +35,7 @@ define(function (require, exports, module) {
 
     panel.init();
     preferenceDialog.init();
-
+    packageManager.init();
 
     //panel.show();
 

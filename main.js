@@ -32,6 +32,7 @@ define(function (require, exports, module) {
 
     ExtensionUtils.loadStyleSheet(module, "styles/style.css");
     ExtensionUtils.loadStyleSheet(module, "styles/icon.less");
+    ExtensionUtils.loadStyleSheet(module, "styles/project.less");
 
     panel.init();
     preferenceDialog.init();

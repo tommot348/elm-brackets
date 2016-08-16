@@ -25,6 +25,11 @@ define(function (require, exports) {
             }),
             html = $(compiledTemplate);
         this.html = html;
+        $("#elm-project-tabs a", html).click(function (e) {
+            e.preventDefault();
+            $(this).tab("show");
+        });
+
 
         CommandManager.register(ExtensionStrings.SHOW_PACKAGE_MANAGER, IDs.SHOW_PACKAGE_MANAGER_ID, function () {
             this.show();

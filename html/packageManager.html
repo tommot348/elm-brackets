@@ -9,17 +9,34 @@
         </ul>
         <div class="tab-content">
             <div id="elm-project-general" class="tab-pane active">
-                <ul>
-                    <li>version</li>
-                    <li>summary</li>
-                    <li>repository</li>
-                    <li>license</li>
-                    <li>source-directory</li>
-                    <li>exposed-modules</li>
-                </ul>
+                <div class="container-fluid">
+                    <div class="row-fluid"><div class="span4 strong">Version</div><div class="pull-right"><input type="text" name="version"></div></div>
+                    <div class="row-fluid"><div class="span4">Summary</div><div class="pull-right"><textarea name="summary"></textarea></div></div>
+                    <div class="row-fluid"><div class="span4">Repository</div><div class="pull-right"><input type="text" name="repository"></div></div>
+                    <div class="row-fluid"><div class="span4">License</div><div class="pull-right"><select name="license">{{#licenses}}<option val="{{name}}">{{name}}</option>{{/licenses}}</select></div></div>
+                    <div class="row-fluid"><div class="span4">Source Directory</div><div class="pull-right"><input type="text" name="source-directory"></div></div>
+                    <div class="row-fluid"><div class="span4">Exposed Modules</div><div class="pull-right"><textarea name="exposed-modules"></textarea></div></div>
+                </div>
             </div>
             <div id="elm-project-dependencies" class="tab-pane">
-                <div id="current"></div>
+                <div id="current">
+                    <table class="table table-condensed" id="dependencies">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Versions
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                        {{#dependencies}}
+                            <tr><td>{{name}}</td><td>{{version}}</td><td><button id="remove" data-id="{{name}}">remove</button></td></tr>
+                        {{/dependencies}}
+                    </table>
+                </div>
                 <div id="new">
                     <div class="control-group">
                         <div class="input-append" style="height: 28px; line-height: 28px;">
@@ -29,7 +46,7 @@
                             </span>
                         </div>
                     </div>
-                    <table class="table table-condensed">
+                    <table class="table table-condensed" id="availiable">
                         <tr>
                             <th>
                                 Name

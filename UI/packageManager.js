@@ -4,13 +4,15 @@ define(function (require, exports) {
     var DialogManager = brackets.getModule("widgets/Dialogs"),
         CommandManager = brackets.getModule("command/CommandManager"),
         PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        DocumentManager = brackets.getModule("document/DocumentManager"),
+        EditorManager = brackets.getModule("editor/EditorManager"),
+        Mustache = brackets.getModule("thirdparty/mustache/mustache"),
+        fs = brackets.getModule("filesystem/FileSystem"),
 
         ExtensionStrings = require("../config/Strings"),
         IDs = require("../config/IDs"),
+        licenses = require("../config/licenses").licenses;
 
-        EditorManager = brackets.getModule("editor/EditorManager"),
-        Mustache = brackets.getModule("thirdparty/mustache/mustache"),
-        fs = brackets.getModule("filesystem/FileSystem");
 
     function PackageManager() {
         this.html = null;
@@ -21,10 +23,12 @@ define(function (require, exports) {
     PackageManager.prototype.init = function () {
         var template = require("text!../html/packageManager.html"),
             compiledTemplate = Mustache.render(template, {
-                S: ExtensionStrings
+                S: ExtensionStrings,
+                licenses: licenses
             }),
             html = $(compiledTemplate);
         this.html = html;
+        console.log(JSON.stringify(licenses));
         $("#elm-project-tabs a", html).click(function (e) {
             e.preventDefault();
             $(this).tab("show");
@@ -62,6 +66,14 @@ define(function (require, exports) {
                 console.log("no data");
             }
         }.bind(this));
+        var currentPath = DocumentManager.getCurrentDocument().file._parentPath;
+        var dir = fs.getDirectoryForPath(currentPath);
+        dir.getContents(function (err, entries, stats, errstats) {
+            entries.forEach(function (entry) {
+                console.dir(entry);
+            });
+
+        });
     };
 
     PackageManager.prototype.query = function (query) {
@@ -94,7 +106,7 @@ define(function (require, exports) {
                 .append(versions)
                 .append(install);
 
-            $("table", this.html).append(tr);
+            $("#availiable", this.html).append(tr);
         }.bind(this));
     };
 

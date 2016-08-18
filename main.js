@@ -36,6 +36,7 @@ define(function (require, exports, module) {
 
     panel.init();
     preferenceDialog.init();
+
     packageManager.init();
 
     //panel.show();

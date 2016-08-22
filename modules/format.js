@@ -14,18 +14,19 @@ define(function (require, exports, module) {
         command = require("../config/IDs").FORMAT_ID; // package-style naming to avoid collisions
 
     function handleFormat() {
-        var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
-            curOpenFile = DocumentManager.getCurrentDocument().file._path;
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+                curOpenFile = DocumentManager.getCurrentDocument().file._path;
 
-        ElmDomain.exec("format",
-            curOpenFile,
-            curOpenDir,
-            brackets.platform === "win",
-            preferences.get("elm-formatBinary"),
-            preferences.get("usePathOrCustom") === "path",
-            preferences.get("formatout"),
-            preferences.get("formatyes"));
-
+            ElmDomain.exec("format",
+                curOpenFile,
+                curOpenDir,
+                brackets.platform === "win",
+                preferences.get("elm-formatBinary"),
+                preferences.get("usePathOrCustom") === "path",
+                preferences.get("formatout"),
+                preferences.get("formatyes"));
+        }
     }
 
     CommandManager.register("elm-format current-file", command, handleFormat);

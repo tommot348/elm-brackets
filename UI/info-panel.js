@@ -10,7 +10,8 @@ define(function (require, exports) {
         IDs = require("../config/IDs"),
 
         EditorManager =  brackets.getModule("editor/EditorManager"),
-        Mustache = brackets.getModule("thirdparty/mustache/mustache");
+        Mustache = brackets.getModule("thirdparty/mustache/mustache"),
+        DocumentManager = brackets.getModule("document/DocumentManager");
 
     function InfoPanel() {
         this.panelElement = null;
@@ -76,11 +77,15 @@ define(function (require, exports) {
     };
 
     InfoPanel.prototype.show = function () {
-        this.panel.show();
-        CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(true);
-        $('#elm-toolbar-icon').toggleClass("on");
-        $('#elm-toolbar-icon').toggleClass("off");
-        this.isShown = true;
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            this.panel.show();
+            CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(true);
+            $('#elm-toolbar-icon').toggleClass("on");
+            $('#elm-toolbar-icon').toggleClass("off");
+            this.isShown = true;
+        } else {
+            console.log(DocumentManager.getCurrentDocument().language.getId());
+        }
     };
 
     InfoPanel.prototype.hide = function () {

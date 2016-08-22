@@ -14,18 +14,20 @@ define(function (require, exports, module) {
         build = require("../config/IDs").BUILD_ID; // package-style naming to avoid collisions
 
     function handleBuild() {
-        var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
-            curOpenFile = DocumentManager.getCurrentDocument().file._path;
-        CommandManager.execute("file.saveAll");
-        ElmDomain.exec("build",
-            curOpenFile,
-            curOpenDir,
-            brackets.platform === "win",
-            preferences.get("elmBinary"),
-            preferences.get("usePathOrCustom") === "path",
-            preferences.get("buildyes"),
-            preferences.get("buildout"),
-            preferences.get("warn"));
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+                curOpenFile = DocumentManager.getCurrentDocument().file._path;
+            CommandManager.execute("file.saveAll");
+            ElmDomain.exec("build",
+                curOpenFile,
+                curOpenDir,
+                brackets.platform === "win",
+                preferences.get("elmBinary"),
+                preferences.get("usePathOrCustom") === "path",
+                preferences.get("buildyes"),
+                preferences.get("buildout"),
+                preferences.get("warn"));
+        }
     }
 
     CommandManager.register("elm-make current file", build, handleBuild);

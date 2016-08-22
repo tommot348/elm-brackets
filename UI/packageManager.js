@@ -20,6 +20,7 @@ define(function (require, exports) {
         this.dialog = null;
         this.packages = null;
         this.gotData = false;
+        this.projectFile = null;
     }
     PackageManager.prototype.init = function () {
         var template = require("text!../html/packageManager.html"),
@@ -41,70 +42,109 @@ define(function (require, exports) {
     };
 
     PackageManager.prototype.show = function () {
-        var html = this.html;
-        this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            var html = this.html;
+            this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
 
-        if (!this.gotData) {
-            $.getJSON("http://package.elm-lang.org/all-packages", function (ret) {
-                this.packages = ret;
-                this.gotData = true;
-                console.log("success");
-            }.bind(this)).done(function () {
-                console.log("second success");
-            }).fail(function () {
-                console.log("error");
-            }).always(function () {
-                console.log("complete");
-            });
-        }
-        $("#elm-project-tabs a", html).click(function (e) {
-            e.preventDefault();
-            $(this).tab("show");
-        });
-        $("#search", this.html).change(function () {
-            var query = $("#search", this.html).val();
-            if (this.gotData) {
-                this.getList(query);
-            } else {
-                console.log("no data");
-            }
-        }.bind(this));
-        var projectFiles = ProjectManager.getAllFiles(function (e) {
-            return e._path.indexOf("elm-stuff") === -1 && e.name === "elm-package.json";
-        }, false, true);
-        projectFiles.done(function (ret) {
-            console.dir(ret);
-            if (ret.length !== 1) {
-                //choose
-                console.dir(ret);
-            } else {
-                ret[0].read(function (err, file, stat) {
-                    var content = JSON.parse(file),
-                        dependencies = content.dependencies,
-                        depKeys = Object.keys(dependencies);
-                    $("#version", html).val(content.version);
-                    $("#summary", html).val(content.summary);
-                    $("#repository", html).val(content.repository);
-                    $("#license", html).val(content.license);
-                    $("#source-directory", html).val(content["source-directories"].join("\n"));
-                    $("#exposed-modules", html).val(content["exposed-modules"].join("\n"));
-                    $("table#dependencies tbody", html).html("");
-                    depKeys.forEach(function (curr) {
-                        var tr = $("<tr></tr>"),
-                            name = $("<td></td>").text(curr),
-                            version = $("<td></td>").text(dependencies[curr]),
-                            button = $("<button>remove</button>").attr("data-name", curr).click(function () {
-                                console.log("remove");
-                            }),
-                            remove = $("<td></td>").append(button);
-                        tr.append(name).append(version).append(remove);
-
-                        $("table#dependencies tbody", html).append(tr);
-                    });
+            if (!this.gotData) {
+                $.getJSON("http://package.elm-lang.org/all-packages", function (ret) {
+                    this.packages = ret;
+                    this.gotData = true;
+                    console.log("success");
+                }.bind(this)).done(function () {
+                    console.log("second success");
+                }).fail(function () {
+                    console.log("error");
+                }).always(function () {
+                    console.log("complete");
                 });
             }
-        });
+            $("table#availiable tbody", html).html("");
+            $("#elm-project-tabs a", html).click(function (e) {
+                e.preventDefault();
+                $(this).tab("show");
+            });
+            $("#search", this.html).change(function () {
+                var query = $("#search", this.html).val();
+                if (this.gotData) {
+                    this.getList(query);
+                } else {
+                    console.log("no data");
+                }
+            }.bind(this));
+            var projectFiles = ProjectManager.getAllFiles(function (e) {
+                return e._path.indexOf("elm-stuff") === -1 && e.name === "elm-package.json";
+            }, false, true);
+            projectFiles.done(function (ret) {
+                console.dir(ret);
+                if (ret.length !== 1) {
+                    //choose
+                    console.dir(ret);
+                } else {
+                    this.projectFile = ret[0]._path;
+                    ret[0].read(function (err, file, stat) {
+                        var content = JSON.parse(file),
+                            dependencies = content.dependencies,
+                            depKeys = Object.keys(dependencies),
+                            elmVersion = content["elm-version"].split("<");
+                        $("#version", html).val(content.version);
+                        $("#summary", html).val(content.summary);
+                        $("#repository", html).val(content.repository);
+                        $("#license", html).val(content.license);
+                        $("#source-directories", html).val(content["source-directories"].join("\n"));
+                        $("#exposed-modules", html).val(content["exposed-modules"].join("\n"));
+                        $("table#dependencies tbody", html).html("");
+                        $("#elm-version input#vlow", html).val(elmVersion[0].trim());
+                        $("#elm-version input#vhigh", html).val(elmVersion[2].trim());
+                        depKeys.forEach(function (curr) {
+                            var tr = $("<tr></tr>"),
+                                name = $("<td></td>").text(curr),
+                                versions = dependencies[curr].split("<"),
+                                vlow = $("<input type=\"text\" name=\"vlow\" id=\"vlow\">").val(versions[0].trim()),
+                                vhigh = $("<input type=\"text\" name=\"vhigh\" id=\"vhigh\">").val(versions[2].trim()),
+                                version = $("<td></td>").append(vlow).append("<p>&lt;= v &lt; </p>").append(vhigh),
+                                button = $("<button>remove</button>").attr("data-name", curr).click(function () {
+                                    tr.remove();
+                                }),
+                                remove = $("<td></td>").append(button);
+                            tr.append(name).append(version).append(remove);
 
+                            $("table#dependencies tbody", html).append(tr);
+                        });
+                    });
+                }
+            }.bind(this));
+            $(".dialog-button", html).click(function () {
+                var version = $("#version", html).val(),
+                    summary = $("#summary", html).val(),
+                    repository =  $("#repository", html).val(),
+                    license = $("#license", html).val(),
+                    sourceDirectories = $("#source-directories", html).val().length > 0 ? $("#source-directories", html).val().split("\n") : [],
+                    exposedModules = $("#exposed-modules", html).val().length > 0 ? $("#exposed-modules", html).val().split("\n") : [],
+                    vlow = $("#elm-version #vlow", html).val(),
+                    vhigh = $("#elm-version #vhigh", html).val(),
+                    elmPackage = {},
+                    dependencies = {};
+                $("table#dependencies tbody tr").each(function (row) {
+                    var vlow = $("input#vlow", this).val(),
+                        vhigh = $("input#vhigh", this).val(),
+                        name = $("td:first-of-type", this).text();
+                    dependencies[name] = vlow + " <= v < " + vhigh;
+                });
+                elmPackage.version = version;
+                elmPackage.summary = summary;
+                elmPackage.repository = repository;
+                elmPackage.license = license;
+                elmPackage["source-directories"] = sourceDirectories;
+                elmPackage["exposed-modules"] = exposedModules;
+                elmPackage["elm-version"] = vlow + " <= v < " + vhigh;
+                elmPackage.dependencies = dependencies;
+                console.log(JSON.stringify(elmPackage));
+                fs.resolve(this.projectFile, function (err, file, stat) {
+                    file.write(JSON.stringify(elmPackage, null, 4));
+                });
+            }.bind(this));
+        }
     };
 
     PackageManager.prototype.query = function (query) {
@@ -124,8 +164,19 @@ define(function (require, exports) {
                 select = $("<select></select>"),
                 versions = $("<td></td>"),
                 button = $("<button>install</button>").attr("data-name", elem.name).click(function () {
-                    console.log("install");
-                    $(this).parents("tr").children("select");
+                    var tri = $("<tr></tr>"),
+                        version = $("<td></td>"),
+                        v1 = select.val(),
+                        v2 = String(Number(v1[0]) + 1) + ".0.0",
+                        vlow = $("<input name=\"vlow\" id=\"vlow\">").val(v1),
+                        vhigh = $("<input name=\"vhigh\" id=\"vhigh\">").val(v2),
+                        button = $("<button>remove</button>").attr("data-name", elem.name).click(function () {
+                            tri.remove();
+                        }),
+                        remove = $("<td></td>").append(button);
+                    version.append(vlow).append("<p> <= v < </p>").append(vhigh);
+                    tri.append(name).append(version).append(remove);
+                    $("table#dependencies tbody").append(tri);
                 }),
                 install = $("<td></td>").append(button);
             elem.versions.forEach(function (elem) {

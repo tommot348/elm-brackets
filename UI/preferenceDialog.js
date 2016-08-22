@@ -12,7 +12,8 @@ define(function (require, exports) {
 
         EditorManager =  brackets.getModule("editor/EditorManager"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache"),
-        fs = brackets.getModule("filesystem/FileSystem");
+        fs = brackets.getModule("filesystem/FileSystem"),
+        DocumentManager = brackets.getModule("document/DocumentManager");
     function PreferenceDialog() {
         this.html = null;
         this.dialog = null;
@@ -89,54 +90,56 @@ define(function (require, exports) {
     };
 
     PreferenceDialog.prototype.show = function () {
-        var html = this.html;
-        this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
-        initBrowseButtons();
-        $("#customRadio", html).on("change", function () {
-            //console.log($(this));
-            if ($(this).prop("checked")) {
-                //console.log("checked");
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            var html = this.html;
+            this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
+            initBrowseButtons();
+            $("#customRadio", html).on("change", function () {
+                //console.log($(this));
+                if ($(this).prop("checked")) {
+                    //console.log("checked");
+                    $("#pathSettings", html).css("display", "table");
+                }
+            });
+            if (preferences.get("usePathOrCustom") === "custom") {
                 $("#pathSettings", html).css("display", "table");
             }
-        });
-        if (preferences.get("usePathOrCustom") === "custom") {
-            $("#pathSettings", html).css("display", "table");
-        }
-        $("#pathRadio", html).on("change", function () {
-            //console.log($(this));
-            if ($(this).prop("checked")) {
-                //console.log("checked");
-                $("#pathSettings", html).css("display", "none");
-            }
-        });
-        $("#savebutton", html).on("click", function () {
-            var texts = $(":text"),
-            //console.log(JSON.stringify(fields));
-                radio = $(":radio").serializeArray(),
-                cbs = $(":checkbox");
+            $("#pathRadio", html).on("change", function () {
+                //console.log($(this));
+                if ($(this).prop("checked")) {
+                    //console.log("checked");
+                    $("#pathSettings", html).css("display", "none");
+                }
+            });
+            $("#savebutton", html).on("click", function () {
+                var texts = $(":text"),
+                //console.log(JSON.stringify(fields));
+                    radio = $(":radio").serializeArray(),
+                    cbs = $(":checkbox");
 
-            $.each(radio, function (i, field) {
-                //console.log(field.name + " " + field.value);
-                preferences.set(field.name, field.value);
+                $.each(radio, function (i, field) {
+                    //console.log(field.name + " " + field.value);
+                    preferences.set(field.name, field.value);
+                });
+                texts.each(function () {
+                    var name = $(this).attr("name"),
+                        value = $(this).val();
+                    //console.log(field.name + " " + field.value);
+                    if (name) {
+                        preferences.set(name, value);
+                    }
+                });
+                cbs.each(function () {
+                    var name = $(this).attr("name"),
+                        value = $(this).prop("checked");
+                    if (name) {
+                        preferences.set(name, value);
+                    }
+                });
+                //preferences.save();
             });
-            texts.each(function () {
-                var name = $(this).attr("name"),
-                    value = $(this).val();
-                //console.log(field.name + " " + field.value);
-                if (name) {
-                    preferences.set(name, value);
-                }
-            });
-            cbs.each(function () {
-                var name = $(this).attr("name"),
-                    value = $(this).prop("checked");
-                if (name) {
-                    preferences.set(name, value);
-                }
-            });
-            //preferences.save();
-        });
-        initValues(this.html);
+            initValues(this.html);
+        }
     };
 
 

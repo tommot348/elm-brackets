@@ -14,16 +14,18 @@ define(function (require, exports, module) {
         command = require("../config/IDs").PKG_INSTALL_ID; // package-style naming to avoid collisions
 
     function handlePkg_install(pkg) {
-        var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
-            curOpenFile = DocumentManager.getCurrentDocument().file._path;
-        pkg = pkg || "";
-        CommandManager.execute("file.saveAll");
-        ElmDomain.exec("pkg_install",
-            pkg,
-            curOpenDir,
-            brackets.platform === "win",
-            preferences.get("elmBinary"),
-            preferences.get("usePathOrCustom") === "path");
+        if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
+            var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+                curOpenFile = DocumentManager.getCurrentDocument().file._path;
+            pkg = pkg || "";
+            CommandManager.execute("file.saveAll");
+            ElmDomain.exec("pkg_install",
+                pkg,
+                curOpenDir,
+                brackets.platform === "win",
+                preferences.get("elmBinary"),
+                preferences.get("usePathOrCustom") === "path");
+        }
     }
 
     CommandManager.register("elm-package install", command, handlePkg_install);

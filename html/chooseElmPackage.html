@@ -1,0 +1,17 @@
+<div id="elm-choose-dialog" class="modal">
+    <div class="modal-header">
+        <h1 class="dialog-title">Please choose elm-package.json</h1>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <select style="width: 100%">{{#files}}<option value="{{index}}">{{file}}</option>{{/files}}</select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="dialog-button btn btn-80">{{S.BUTTON_CLOSE}}</button>
+    </div>
+</div>

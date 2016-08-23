@@ -15,36 +15,32 @@ define(function (require, exports) {
         licenses = require("../config/licenses").licenses;
 
 
-    function PackageManager() {
+    function ProjectSettingsDialog() {
         this.html = null;
         this.dialog = null;
         this.packages = null;
         this.gotData = false;
         this.projectFile = null;
     }
-    PackageManager.prototype.init = function () {
-        var template = require("text!../html/packageManager.html"),
+
+    ProjectSettingsDialog.prototype.init = function () {
+        var template = require("text!../html/projectSettingsDialog.html"),
             compiledTemplate = Mustache.render(template, {
                 S: ExtensionStrings,
                 licenses: licenses
             }),
             html = $(compiledTemplate);
         this.html = html;
-        console.log(JSON.stringify(licenses));
-
-
+        //console.log(JSON.stringify(licenses));
 
         CommandManager.register(ExtensionStrings.SHOW_PACKAGE_MANAGER, IDs.SHOW_PACKAGE_MANAGER_ID, function () {
             this.show();
         }.bind(this));
-
-
     };
 
-    PackageManager.prototype.show = function () {
+    ProjectSettingsDialog.prototype.show = function () {
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
             var html = this.html;
-            this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
 
             if (!this.gotData) {
                 $.getJSON("http://package.elm-lang.org/all-packages", function (ret) {
@@ -59,30 +55,103 @@ define(function (require, exports) {
                     console.log("complete");
                 });
             }
-            $("table#availiable tbody", html).html("");
-            $("#elm-project-tabs a", html).click(function (e) {
-                e.preventDefault();
-                $(this).tab("show");
-            });
-            $("#search", this.html).change(function () {
-                var query = $("#search", this.html).val();
-                if (this.gotData) {
-                    this.getList(query);
-                } else {
-                    console.log("no data");
-                }
-            }.bind(this));
+
             var projectFiles = ProjectManager.getAllFiles(function (e) {
                 return e._path.indexOf("elm-stuff") === -1 && e.name === "elm-package.json";
             }, false, true);
+
             projectFiles.done(function (ret) {
+                var chooseDialog = null;
                 console.dir(ret);
+                this.projectFile = $.Deferred();
                 if (ret.length !== 1) {
                     //choose
-                    console.dir(ret);
+                    var path = null;
+                    fs.resolve(ProjectManager.getProjectRoot().fullPath + ".elm-package-path", function (err, file) {
+                        if (!err) {
+                            path = file;
+                        }
+                    });
+                    if (path === null) {
+                        if (ret.length > 1) {
+                            var template = require("text!../html/chooseElmPackage.html"),
+                                files = ret.map(function (e, i) {
+                                    return { file: e._path, index: i };
+                                }),
+                                compiledTemplate = Mustache.render(template, {
+                                    S: ExtensionStrings,
+                                    files: files
+                                }),
+                                chtml = $(compiledTemplate);
+
+                            chooseDialog = DialogManager.showModalDialogUsingTemplate(chtml, false);
+                            $(".dialog-button", chtml).click(function () {
+                                console.log("close choose");
+                                var file = $("select", chtml).val();
+                                console.log(file);
+                                chooseDialog.close();
+                                fs.getFileForPath(ProjectManager.getProjectRoot().fullPath + ".elm-package-path").write(ret[Number(file)]._path);
+                                this.projectFile.resolve(ret[Number(file)]);
+                            }.bind(this));
+                        }
+                    } else {
+                        path.read(function (err, path) {
+                            if (!err) {
+                                this.projectFile.resolve(fs.getFileForPath(path));
+                            }
+                        }.bind(this));
+                    }
                 } else {
-                    this.projectFile = ret[0]._path;
-                    ret[0].read(function (err, file, stat) {
+                    this.projectFile.resolve(ret[0]);
+                }
+                this.projectFile.done(function (data) {
+                    this.dialog = DialogManager.showModalDialogUsingTemplate(html);
+                    $("table#availiable tbody", html).html("");
+
+                    $("#elm-project-tabs a", html).click(function (e) {
+                        e.preventDefault();
+                        $(this).tab("show");
+                    });
+
+                    $("#search", html).change(function () {
+                        var query = $("#search", this.html).val();
+                        if (this.gotData) {
+                            this.getList(query);
+                        } else {
+                            console.log("no data");
+                        }
+                    }.bind(this));
+
+                    $(".dialog-button", html).click(function () {
+                        var version = $("#version", html).val(),
+                            summary = $("#summary", html).val(),
+                            repository =  $("#repository", html).val(),
+                            license = $("#license", html).val(),
+                            sourceDirectories = $("#source-directories", html).val().length > 0 ? $("#source-directories", html).val().split("\n") : [],
+                            exposedModules = $("#exposed-modules", html).val().length > 0 ? $("#exposed-modules", html).val().split("\n") : [],
+                            vlow = $("#elm-version #vlow", html).val(),
+                            vhigh = $("#elm-version #vhigh", html).val(),
+                            elmPackage = {},
+                            dependencies = {};
+                        $("table#dependencies tbody tr").each(function (row) {
+                            var vlow = $("input#vlow", this).val(),
+                                vhigh = $("input#vhigh", this).val(),
+                                name = $("td:first-of-type", this).text();
+                            dependencies[name] = vlow + " <= v < " + vhigh;
+                        });
+                        elmPackage.version = version;
+                        elmPackage.summary = summary;
+                        elmPackage.repository = repository;
+                        elmPackage.license = license;
+                        elmPackage["source-directories"] = sourceDirectories;
+                        elmPackage["exposed-modules"] = exposedModules;
+                        elmPackage["elm-version"] = vlow + " <= v < " + vhigh;
+                        elmPackage.dependencies = dependencies;
+                        //console.log(JSON.stringify(elmPackage));
+                        data.write(JSON.stringify(elmPackage, null, 4));
+                    }.bind(this));
+
+                    data.read(function (err, file, stat) {
                         var content = JSON.parse(file),
                             dependencies = content.dependencies,
                             depKeys = Object.keys(dependencies),
@@ -112,48 +181,18 @@ define(function (require, exports) {
                             $("table#dependencies tbody", html).append(tr);
                         });
                     });
-                }
-            }.bind(this));
-            $(".dialog-button", html).click(function () {
-                var version = $("#version", html).val(),
-                    summary = $("#summary", html).val(),
-                    repository =  $("#repository", html).val(),
-                    license = $("#license", html).val(),
-                    sourceDirectories = $("#source-directories", html).val().length > 0 ? $("#source-directories", html).val().split("\n") : [],
-                    exposedModules = $("#exposed-modules", html).val().length > 0 ? $("#exposed-modules", html).val().split("\n") : [],
-                    vlow = $("#elm-version #vlow", html).val(),
-                    vhigh = $("#elm-version #vhigh", html).val(),
-                    elmPackage = {},
-                    dependencies = {};
-                $("table#dependencies tbody tr").each(function (row) {
-                    var vlow = $("input#vlow", this).val(),
-                        vhigh = $("input#vhigh", this).val(),
-                        name = $("td:first-of-type", this).text();
-                    dependencies[name] = vlow + " <= v < " + vhigh;
-                });
-                elmPackage.version = version;
-                elmPackage.summary = summary;
-                elmPackage.repository = repository;
-                elmPackage.license = license;
-                elmPackage["source-directories"] = sourceDirectories;
-                elmPackage["exposed-modules"] = exposedModules;
-                elmPackage["elm-version"] = vlow + " <= v < " + vhigh;
-                elmPackage.dependencies = dependencies;
-                console.log(JSON.stringify(elmPackage));
-                fs.resolve(this.projectFile, function (err, file, stat) {
-                    file.write(JSON.stringify(elmPackage, null, 4));
-                });
+                }.bind(this));
             }.bind(this));
         }
     };
 
-    PackageManager.prototype.query = function (query) {
+    ProjectSettingsDialog.prototype.query = function (query) {
         return this.packages.filter(function (i) {
             return i.name.indexOf(query) !== -1;
         });
     };
 
-    PackageManager.prototype.getList = function (query) {
+    ProjectSettingsDialog.prototype.getList = function (query) {
         var pack = this.query(query);
         console.log(JSON.stringify(pack));
         $("table#availiable tbody", this.html).html("");
@@ -192,5 +231,5 @@ define(function (require, exports) {
         }.bind(this));
     };
 
-    exports.packageManager = new PackageManager();
+    exports.projectSettingsDialog = new ProjectSettingsDialog();
 });

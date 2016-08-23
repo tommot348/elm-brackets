@@ -92,7 +92,7 @@ define(function (require, exports) {
     PreferenceDialog.prototype.show = function () {
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
             var html = this.html;
-            this.dialog = DialogManager.showModalDialogUsingTemplate(this.html);
+            this.dialog = DialogManager.showModalDialogUsingTemplate(html);
             initBrowseButtons();
             $("#customRadio", html).on("change", function () {
                 //console.log($(this));

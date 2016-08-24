@@ -66,6 +66,7 @@ define(function (require, exports, module) {
                     }
                 );
             } catch (ex) {
+                console.log(buffer);
                 console.log(ex);
                 result.reject();
             }

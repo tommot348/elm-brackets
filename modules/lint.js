@@ -11,20 +11,24 @@ define(function (require, exports, module) {
         PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
         ExtensionStrings = require("../config/Strings"),
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
-        LINTER_NAME = require("../config/IDs").LINTER_NAME;
+        LINTER_NAME = require("../config/IDs").LINTER_NAME,
+        elmPackageJson = require("./elm-package-json");
 
     function lint() {
         var response = new $.Deferred(),
             result = {errors : []},
-            curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+            curOpenDir = elmPackageJson.getElmPackagePath(),
             curOpenFile = DocumentManager.getCurrentDocument().file._path,
             buffer = "";
-        ElmDomain.exec("lint",
+        curOpenDir.done(function (path) {
+            ElmDomain.exec("lint",
             curOpenFile,
-            curOpenDir,
+            path,
             brackets.platform === "win",
             preferences.get("elmBinary"),
             preferences.get("usePathOrCustom") === "path");
+        });
+
         $(ElmDomain).on("lintout", function (evt, data) {
             buffer += data;
         });

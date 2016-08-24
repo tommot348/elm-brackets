@@ -11,20 +11,23 @@ define(function (require, exports, module) {
         PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
         ExtensionStrings = require("../config/Strings"),
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
-        command = require("../config/IDs").PKG_INSTALL_ID; // package-style naming to avoid collisions
+        command = require("../config/IDs").PKG_INSTALL_ID,
+        elmPackageJson = require("./elm-package-json"); // package-style naming to avoid collisions
 
     function handlePkg_install(pkg) {
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
-            var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+            var curOpenDir = elmPackageJson.getElmPackagePath(),
                 curOpenFile = DocumentManager.getCurrentDocument().file._path;
             pkg = pkg || "";
             CommandManager.execute("file.saveAll");
-            ElmDomain.exec("pkg_install",
-                pkg,
-                curOpenDir,
-                brackets.platform === "win",
-                preferences.get("elmBinary"),
-                preferences.get("usePathOrCustom") === "path");
+            curOpenDir.done(function (path) {
+                ElmDomain.exec("pkg_install",
+                    pkg,
+                    path,
+                    brackets.platform === "win",
+                    preferences.get("elmBinary"),
+                    preferences.get("usePathOrCustom") === "path");
+            });
         }
     }
 

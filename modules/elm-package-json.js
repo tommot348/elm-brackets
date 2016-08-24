@@ -46,7 +46,7 @@ define(function (require, exports) {
                     }
                 });
             } else {
-                 var projectFiles = ProjectManager.getAllFiles(function (e) {
+                var projectFiles = ProjectManager.getAllFiles(function (e) {
                     return e._path.indexOf("elm-stuff") === -1 && e.name === "elm-package.json";
                 }, false, true);
                 projectFiles.done(function (ret) {
@@ -72,7 +72,7 @@ define(function (require, exports) {
 
         var path = getElmPackagePath();
         path.done(function (epjpath) {
-             data.resolve(fs.getFileForPath(epjpath + "elm-package.json"));
+            data.resolve(fs.getFileForPath(epjpath + "elm-package.json"));
         });
         return data;
     };

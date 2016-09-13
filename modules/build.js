@@ -9,6 +9,8 @@ define(function (require, exports, module) {
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
         PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        LiveDevelopment = brackets.getModule('LiveDevelopment/LiveDevelopment'),
+        Inspector = brackets.getModule('LiveDevelopment/Inspector/Inspector'),
         ExtensionStrings = require("../config/Strings"),
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         build = require("../config/IDs").BUILD_ID,
@@ -20,7 +22,7 @@ define(function (require, exports, module) {
                 curOpenFile = DocumentManager.getCurrentDocument().file._path;
             CommandManager.execute("file.saveAll");
             curOpenDir.done(function (path) {
-                ElmDomain.exec("build",
+                var execResult = ElmDomain.exec("build",
                     curOpenFile,
                     path,
                     brackets.platform === "win",
@@ -29,8 +31,15 @@ define(function (require, exports, module) {
                     preferences.get("buildyes"),
                     path + (preferences.get("buildout") === "" ? "index.html" : preferences.get("buildout")),
                     preferences.get("warn"));
-            });
+                $.when(execResult)
+                    .then(function () {
+                        setTimeout(Inspector.Page.reload, 200);
+                    })
+                    .fail(function (err) {
+                        console.log("build failed " + err);
+                    });
 
+            });
         }
     }
 

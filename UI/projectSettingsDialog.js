@@ -58,7 +58,7 @@ define(function (require, exports) {
 
             elmPackageJson.getElmPackage().done(function (data) {
                 this.dialog = DialogManager.showModalDialogUsingTemplate(html);
-                $("table#availiable tbody", html).html("");
+                $("div#availiable .content", html).remove();
 
                 $("#elm-project-tabs a", html).click(function (e) {
                     e.preventDefault();
@@ -85,10 +85,10 @@ define(function (require, exports) {
                         vhigh = $("#elm-version #vhigh", html).val(),
                         elmPackage = {},
                         dependencies = {};
-                    $("table#dependencies tbody tr").each(function (row) {
+                    $("div#dependencies .content").each(function (row) {
                         var vlow = $("input#vlow", this).val(),
                             vhigh = $("input#vhigh", this).val(),
-                            name = $("td:first-of-type", this).text();
+                            name = $("div:first-of-type", this).text();
                         dependencies[name] = vlow + " <= v < " + vhigh;
                     });
                     elmPackage.version = version;
@@ -101,6 +101,7 @@ define(function (require, exports) {
                     elmPackage.dependencies = dependencies;
                     //console.log(JSON.stringify(elmPackage));
                     data.write(JSON.stringify(elmPackage, null, 4));
+                    CommandManager.execute(IDs.PKG_INSTALL_ID);
                 }.bind(this));
 
                 data.read(function (err, file, stat) {
@@ -114,23 +115,23 @@ define(function (require, exports) {
                     $("#license", html).val(content.license);
                     $("#source-directories", html).val(content["source-directories"].join("\n"));
                     $("#exposed-modules", html).val(content["exposed-modules"].join("\n"));
-                    $("table#dependencies tbody", html).html("");
+                    $("div#dependencies .content", html).remove();
                     $("#elm-version input#vlow", html).val(elmVersion[0].trim());
                     $("#elm-version input#vhigh", html).val(elmVersion[2].trim());
                     depKeys.forEach(function (curr) {
-                        var tr = $("<tr></tr>"),
-                            name = $("<td></td>").text(curr),
+                        var row = $("<div class=\"row-fluid content\"></div>"),
+                            name = $("<div class=\"span4\"></div>").text(curr),
                             versions = dependencies[curr].split("<"),
                             vlow = $("<input type=\"text\" name=\"vlow\" id=\"vlow\">").val(versions[0].trim()),
                             vhigh = $("<input type=\"text\" name=\"vhigh\" id=\"vhigh\">").val(versions[2].trim()),
-                            version = $("<td></td>").append(vlow).append("<p>&lt;= v &lt; </p>").append(vhigh),
+                            version = $("<div class=\"span4\"></div>").append(vlow).append("<p>&lt;= v &lt; </p>").append(vhigh),
                             button = $("<button>remove</button>").attr("data-name", curr).click(function () {
-                                tr.remove();
+                                row.remove();
                             }),
-                            remove = $("<td></td>").append(button);
-                        tr.append(name).append(version).append(remove);
+                            remove = $("<div class=\"span4\"></span>").append(button);
+                        row.append(name).append(version).append(remove);
 
-                        $("table#dependencies tbody", html).append(tr);
+                        $("div#dependencies #header", html).after(row);
                     });
                 });
             }.bind(this));
@@ -147,39 +148,41 @@ define(function (require, exports) {
     ProjectSettingsDialog.prototype.getList = function (query) {
         var pack = this.query(query);
         console.log(JSON.stringify(pack));
-        $("table#availiable tbody", this.html).html("");
+        $("div#availiable .content", this.html).remove();
         pack.forEach(function (elem) {
-            var tr = $("<tr></tr>"),
-                name = $("<td></td>").text(elem.name),
-                desc = $("<td></td>").text(elem.summary),
-                select = $("<select></select>"),
-                versions = $("<td></td>"),
+            var row = $("<div class=\"row-fluid content\"></div>"),
+                name = $("<div class=\"span3\"></div>").text(elem.name),
+                desc = $("<div class=\"span3\">></div>").text(elem.summary),
+                select = $("<select class=\"form-control\"></select>"),
+                versions = $("<div class=\"span3\"></div>"),
                 button = $("<button>install</button>").attr("data-name", elem.name).click(function () {
-                    var tri = $("<tr></tr>"),
-                        version = $("<td></td>"),
+                    var rowi = $("<div class=\"row-fluid content\"></div>"),
+                        version = $("<div class=\"span3\"></div>"),
                         v1 = select.val(),
                         v2 = String(Number(v1[0]) + 1) + ".0.0",
-                        vlow = $("<input name=\"vlow\" id=\"vlow\">").val(v1),
-                        vhigh = $("<input name=\"vhigh\" id=\"vhigh\">").val(v2),
+                        vlow = $("<input class=\"form-control\" name=\"vlow\" id=\"vlow\">").val(v1),
+                        vhigh = $("<input class=\"form-control\" name=\"vhigh\" id=\"vhigh\">").val(v2),
                         button = $("<button>remove</button>").attr("data-name", elem.name).click(function () {
-                            tri.remove();
+                            rowi.remove();
                         }),
-                        remove = $("<td></td>").append(button);
+                        remove = $("<div class=\"span3\"></div>").append(button);
                     version.append(vlow).append("<p> <= v < </p>").append(vhigh);
-                    tri.append(name).append(version).append(remove);
-                    $("table#dependencies tbody").append(tri);
+                    rowi.append(name.clone())
+                        .append(version)
+                        .append(remove);
+                    $("div#dependencies #header div:last-of-type").after(rowi);
                 }),
-                install = $("<td></td>").append(button);
+                install = $("<div class=\"span3\"></div>").append(button);
             elem.versions.forEach(function (elem) {
                 select.append($("<option></option>").text(elem).val(elem));
             });
             versions.append(select);
-            tr.append(name)
+            row.append(name)
                 .append(desc)
                 .append(versions)
                 .append(install);
 
-            $("table#availiable tbody", this.html).append(tr);
+            $("div#availiable #header", this.html).after(row);
         }.bind(this));
     };
 

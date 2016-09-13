@@ -27,6 +27,13 @@
 /*global define */
 
 define({
+    //General Stuff
+    "NAME": "Name",
+    "VERSION": "Version",
+    "SUMMARY": "Summary",
+    "GENERAL_SETTINGS": "General Settings",
+
+
     // Extension
     "EXTENSION_NAME"    :   "elm-brackets",
     "EXTENSION_PREFS"   :   "tommot348.elm-brackets",
@@ -48,7 +55,7 @@ define({
     "FORMAT_HOVER"      :   "Format current file",
     "PKG_INSTALL_HOVER" :   "Install all dependencies for current file",
     "PREFERENCES_HOVER" :   "Open settings dialog",
-    "PACKAGE_MANAGER_HOVER" :   "Open package manager",
+    "PROJECT_DIALOG_HOVER" :   "Open Project Settings Dialog",
     
     // Status
     "STATUSBAR_NAME"    :   "Elm Build Status",
@@ -66,12 +73,25 @@ define({
     "ELMBINARY" : "path to elm binaries",
     "ELMFORMAT" : "path to elm-format binary",
     "ELMORACLE" : "path to elm-oracle binary",
+    "CUSTOM_PATHS": "Custom paths",
+    "ELM_MAKE_OPTIONS": "elm-make options",
+    "BUILDOUT": "output file name (default=\"index.html\", .js will turn output into javascript)",
+    "DOCSOUT": "docs output file (default=\"[filename]-docs.js\")",
+    "YTA": "yes to all",
+    "YTAMESSAGE": "(unchecking this will cause build to fail if the dependencies are not installed via elm-package)",
+    "WARNINGS": "show warnings?",
+    "ELM_FORMAT_OPTIONS": "elm-format options",
+    "FORMATOUT": "output file (default: [name of formatted file])",
 
-    //Package Manager
-    "SHOW_PACKAGE_MANAGER":  "Show package manager",
+    //Project Dialog
+    "SHOW_PROJECT_DIALOG":  "Show Project Dialog",
+    "PROJECT_DIALOG_HEADER": "elm project",
+    "PROJECT_DIALOG_DEPENDENCIES": "Dependecies",
+    "ELM_CHOOSE_DIALOG": "Please choose elm-package.json",
 
     //Multi Purpose UI elements
     //BUTTONS
     "BUTTON_CLOSE"      :   "Close",
-    "BUTTON_SAVE"      :   "Save"
+    "BUTTON_SAVE"      :   "Save",
+    "BUTTON_BROWSE": "browse"
 });

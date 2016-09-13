@@ -14,7 +14,7 @@
             </tr>
             <tr>
                 <td>
-                    <h2>General settings</h2>
+                    <h2>{{S.GENERAL_SETTINGS}}</h2>
                 </td>
                 <td>
                 </td>
@@ -30,7 +30,7 @@
                     </label>
                     <label>
                         <input type="radio" name="usePathOrCustom" id="customRadio" value="custom">
-                        custom paths
+                        {{S.CUSTOM_PATHS}}
                     </label>
                 </td>
             </tr>
@@ -38,39 +38,39 @@
         <table style="display: none" id="pathSettings">
             <tr>
                 <td>
-                    <h2>Custom paths</h2>
+                    <h2>{{S.CUSTOM_PATHS}}</h2>
                 </td>
                 <td>
                 </td>
             </tr>
             <tr>
                 <td>{{S.ELMBINARY}}</td>
-                <td><input type="text" id="elmBinary" name="elmBinary"><button class="btn btn-primary" id="browseElmBinary">browse</button></td>
+                <td><input type="text" id="elmBinary" name="elmBinary"><button class="btn btn-primary" id="browseElmBinary">{{S.BUTTON_BROWSE}}</button></td>
             </tr>
             <tr>
                 <td>{{S.ELMFORMAT}}</td>
-                <td><input type="text" id="elm-formatBinary" name="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">browse</button></td>
+                <td><input type="text" id="elm-formatBinary" name="elm-formatBinary"><button class="btn btn-primary" id="browseElm-formatBinary">{{S.BUTTON_BROWSE}}</button></td>
             </tr>
             <tr>
                 <td>{{S.ELMORACLE}}</td>
-                <td><input type="text" id="elm-oracleBinary" name="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">browse</button></td>
+                <td><input type="text" id="elm-oracleBinary" name="elm-oracleBinary"><button class="btn btn-primary" id="browseElm-oracleBinary">{{S.BUTTON_BROWSE}}</button></td>
             </tr>
         </table>
         <table>
             <tr>
-                <td><h2>elm-make options</h2></td>
+                <td><h2>{{S.ELM_MAKE_OPTIONS}}</h2></td>
                 <td></td>
             </tr>
             <tr>
-                <td>output file name (default="index.html", .js will turn output into javascript)</td>
+                <td>{{S.BUILDOUT}}</td>
                 <td><input type="text" id="buildout" name="buildout"></td>
             </tr>
             <tr>
-                <td>docs output file (default="[filename]-docs.js")</td>
+                <td>{{S.DOCSOUT}}</td>
                 <td><input type="text" id="docsoutputfile" name="docsoutputfile"></td>
             </tr>
             <tr>
-                <td>yes to all (unchecking this will cause build to fail if the dependencies are not installed via elm-package)</td>
+                <td>{{S.YTA}} {{S.YTAMESSAGE}}</td>
                 <td><input type="checkbox" id="buildyes" name="buildyes" value="yes"></td>
             </tr>
             <!--<tr>
@@ -78,19 +78,19 @@
                 <td><label><input type="radio" id="reportformatjson" name="reportformat" value="json" checked> json</label><label><input type="radio" id="reportformattext" name="reportformat" value="text">text</label></td>
             </tr>-->
             <tr>
-                <td>show warnings?</td>
+                <td>{{S.WARNINGS}}</td>
                 <td><input type="checkbox" id="warn" name="warn" value="yes"></td>
             </tr>
 
             <tr>
-                <td><h2>elm-format options</h2></td><td></td>
+                <td><h2>{{S.ELM_FORMAT_OPTIONS}}</h2></td><td></td>
             </tr>
             <tr>
-                <td>output file (default: [name of formatted file])</td>
+                <td>{{S.FORMATOUT}}</td>
                 <td><input type="text" id="formatout" name="formatout"></td>
             </tr>
             <tr>
-                <td>yes to all</td>
+                <td>{{S.YTA}}</td>
                 <td><input type="checkbox" id="formatyes" name="formatyes"></td>
             </tr>
         </table>

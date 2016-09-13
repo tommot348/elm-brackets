@@ -1,5 +1,4 @@
 /*jslint node: true*/
-/*global brackets*/
 (function () {
     "use strict";
 
@@ -7,7 +6,7 @@
         os = require("os"),
         child;
 
-    function _runCommand(cmd, cwd, isWin, prefix) {
+    function _runCommand(cmd, cwd, isWin, prefix, errback) {
         var spawn = require("child_process").spawn,
             args,
             enddir = cwd,
@@ -65,22 +64,24 @@
 
         child.on('exit', function (code) {
             _domainManager.emitEvent("elmDomain", prefix + "finished");
+            errback(null, prefix + " success");
             //console.log("exit");
         });
 
         child.on('error', function (error) {
             _domainManager.emitEvent("elmDomain", prefix + "finished");
+            errback(prefix + " failed", null);
             //console.log("error");
         });
     }
 
-    function _build(file, cwd, isWin, binaryPath, usePATH, yes, out, warn) {
+    function _build(file, cwd, isWin, binaryPath, usePATH, yes, out, warn, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "";
         var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + ((out.length > 0) ? ("--output " + out + " ") : " ") + (warn ? "--warn " : " ") + "--report json " +  file;
-        _runCommand(cmd, cwd, isWin, "build");
+        _runCommand(cmd, cwd, isWin, "build", errback);
     }
 
-    function _docs(file, cwd, isWin, binaryPath, usePATH, docname) {
+    function _docs(file, cwd, isWin, binaryPath, usePATH, docname, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd;
         docname = docname.length > 0 ? docname : file + "-docs.js";
@@ -88,28 +89,28 @@
 
     }
 
-    function _lint(file, cwd, isWin, binaryPath, usePATH) {
+    function _lint(file, cwd, isWin, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-make --warn --report json --output " + (isWin ? "nul " : "/dev/null ") + file;
-        _runCommand(cmd, cwd, isWin, "lint");
+        _runCommand(cmd, cwd, isWin, "lint", errback);
     }
 
-    function _codeHint(str, file, cwd, isWin, binaryPath, usePATH) {
+    function _codeHint(str, file, cwd, isWin, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-oracle " + file + " " + str;
-        _runCommand(cmd, cwd, isWin, "hint");
+        _runCommand(cmd, cwd, isWin, "hint", errback);
     }
 
-    function _pkg_install(pkg, cwd, isWin, binaryPath, usePATH) {
+    function _pkg_install(pkg, cwd, isWin, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-package install -y " + pkg;
-        _runCommand(cmd, cwd, isWin, "pkg_install");
+        _runCommand(cmd, cwd, isWin, "pkg_install", errback);
     }
 
-    function _format(file, cwd, isWin, binaryPath, usePATH, out, yes) {
+    function _format(file, cwd, isWin, binaryPath, usePATH, out, yes, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-format " + (yes ? "--yes " : " ") + (out.length > 0 ? "--output " + out + " " : " ") + file;
-        _runCommand(cmd, cwd, isWin, "format");
+        _runCommand(cmd, cwd, isWin, "format", errback);
     }
 
     function registerEvents(domainManager, prefix) {
@@ -189,6 +190,11 @@
                         name: "warn",
                         type: "boolean",
                         description: "flag to activate warnings"
+                    },
+                    {
+                        name: "errback",
+                        type: "function",
+                        description: "node style errback function"
                     }
                 ]
             );
@@ -224,6 +230,11 @@
                         name: "usePATH",
                         type: "boolean",
                         description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "errback",
+                        type: "function",
+                        description: "node style errback function"
                     }
                 ]
             );
@@ -264,6 +275,11 @@
                         name: "usePATH",
                         type: "boolean",
                         description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "errback",
+                        type: "function",
+                        description: "node style errback function"
                     }
                 ]
             );
@@ -299,6 +315,11 @@
                         name: "usePATH",
                         type: "boolean",
                         description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "errback",
+                        type: "function",
+                        description: "node style errback function"
                     }
                 ]
             );
@@ -343,6 +364,11 @@
                         name: "yes",
                         type: "boolean",
                         description: "flag to set \"yes to all\""
+                    },
+                    {
+                        name: "errback",
+                        type: "function",
+                        description: "node style errback function"
                     }
                 ]
             );

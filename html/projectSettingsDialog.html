@@ -1,11 +1,11 @@
 <div id="elm-project-dialog" class="modal">
     <div class="modal-header">
-        <h1 class="dialog-title">elm project</h1>
+        <h1 class="dialog-title">{{S.PROJECT_DIALOG_HEADER}}</h1>
     </div>
     <div class="modal-body">
         <ul class="nav nav-tabs" id="elm-project-tabs">
-            <li class="active"><a href="#elm-project-general" >General Settings</a></li>
-            <li><a href="#elm-project-dependencies">Dependecies</a></li>
+            <li class="active"><a href="#elm-project-general" >{{S.GENERAL_SETTINGS}}</a></li>
+            <li><a href="#elm-project-dependencies">{{S.PROJECT_DIALOG_DEPENDENCIES}}</a></li>
         </ul>
         <div class="tab-content">
             <div id="elm-project-general" class="tab-pane active">
@@ -21,22 +21,10 @@
             </div>
             <div id="elm-project-dependencies" class="tab-pane">
                 <div id="current">
-                    <table class="table table-condensed" id="dependencies">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Versions
-                                </th>
-                                <th>
+                    <div class="container-fluid" id="dependencies">
+                        <div class="row-fluid" id="header"><div class="span4 strong">{{S.NAME}}</div><div class="span4 strong">{{S.Version}}s</div><div class="span4"></div></div>
 
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    </div>
                 </div>
                 <div id="new">
                     <div class="control-group">
@@ -47,25 +35,9 @@
                             </span>
                         </div>
                     </div>
-                    <table class="table table-condensed" id="availiable">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Summary
-                                </th>
-                                <th>
-                                    Versions
-                                </th>
-                                <th>
-
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="container-fluid" id="availiable">
+                        <div class="row-fluid" id="header"><div class="span3 strong">{{S.NAME}}</div><div class="span3 strong">{{S.SUMMARY}}</div><div class="span3 strong">{{S.Version}}s</div><div class="span3"></div></div>
+                    </div>
                 </div>
             </div>
         </div>

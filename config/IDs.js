@@ -8,5 +8,5 @@ define({
     "PANEL_ID"          :   "elm-panel",
     "LINTER_NAME"       :   "elmlint",
     "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences",
-    "SHOW_PACKAGE_MANAGER_ID" : "elm.show_package_manager"
+    "SHOW_PROJECT_DIALOG_ID" : "elm.show_package_manager"
 });

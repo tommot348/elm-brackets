@@ -93,5 +93,7 @@ define({
     //BUTTONS
     "BUTTON_CLOSE"      :   "Close",
     "BUTTON_SAVE"      :   "Save",
-    "BUTTON_BROWSE": "browse"
+    "BUTTON_BROWSE": "browse",
+    "BUTTON_REMOVE": "remove",
+    "BUTTON_INSTALL": "install"
 });

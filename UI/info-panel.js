@@ -66,8 +66,8 @@ define(function (require, exports) {
             CommandManager.execute(IDs.SHOW_PREFERENCES_DIALOG_ID);
         }.bind(this));
 
-        $('.package_manager', this.panelElement).on('click', function () {
-            CommandManager.execute(IDs.SHOW_PACKAGE_MANAGER_ID);
+        $('.project', this.panelElement).on('click', function () {
+            CommandManager.execute(IDs.SHOW_PROJECT_DIALOG_ID);
         }.bind(this));
 
         this.status.on('click', function () {

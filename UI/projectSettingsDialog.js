@@ -33,7 +33,7 @@ define(function (require, exports) {
         this.html = html;
         //console.log(JSON.stringify(licenses));
 
-        CommandManager.register(ExtensionStrings.SHOW_PACKAGE_MANAGER, IDs.SHOW_PACKAGE_MANAGER_ID, function () {
+        CommandManager.register(ExtensionStrings.SHOW_PROJECT_DIALOG, IDs.SHOW_PROJECT_DIALOG_ID, function () {
             this.show();
         }.bind(this));
     };
@@ -125,7 +125,7 @@ define(function (require, exports) {
                             vlow = $("<input type=\"text\" name=\"vlow\" id=\"vlow\">").val(versions[0].trim()),
                             vhigh = $("<input type=\"text\" name=\"vhigh\" id=\"vhigh\">").val(versions[2].trim()),
                             version = $("<div class=\"span4\"></div>").append(vlow).append("<p>&lt;= v &lt; </p>").append(vhigh),
-                            button = $("<button>remove</button>").attr("data-name", curr).click(function () {
+                            button = $("<button>" + ExtensionStrings.BUTTON_REMOVE + "</button>").attr("data-name", curr).click(function () {
                                 row.remove();
                             }),
                             remove = $("<div class=\"span4\"></span>").append(button);
@@ -155,7 +155,7 @@ define(function (require, exports) {
                 desc = $("<div class=\"span3\">></div>").text(elem.summary),
                 select = $("<select class=\"form-control\"></select>"),
                 versions = $("<div class=\"span3\"></div>"),
-                button = $("<button>install</button>").attr("data-name", elem.name).click(function () {
+                button = $("<button>" + ExtensionStrings.BUTTON_INSTALL + "</button>").attr("data-name", elem.name).click(function () {
                     var rowi = $("<div class=\"row-fluid content\"></div>"),
                         version = $("<div class=\"span3\"></div>"),
                         v1 = select.val(),

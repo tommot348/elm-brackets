@@ -3,18 +3,21 @@
 #### How to install the extension:  
 In the Brackets extension manager search for "elm".  
 Then install the extension named: "Elm support for Brackets (forked from lepinay/elm-brackets)" from author tommot348
-#### Currently supported:
+#### Currently features:
 - Syntax highlight(may need some work)
-- Simple file build with output panel (fetches all dependencies)
+- Simple file build with output panel
 - Jump to error on click in build output / lint output
 - Quasilint (compiler output is used as lint)(does not fetch dependencies)
-- dependency install (via elm-package install)
+- automatic dependency install (via elm-package install)
 - elm-format support (see notes below roadmap)
 - elm-oracle support (= autocomplete; see notes below roadmap)
 - Preferences (configurable binary path, options, etc)
+- Project settings dialog (elm-package.json frontend)
 
 #### Roadmap:  
-- Elm Package Manager GUI
+- REPL utilization
+- Docs preview
+- Refractoring
 
 
 #### Notes:

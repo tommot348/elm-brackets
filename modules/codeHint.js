@@ -89,14 +89,28 @@ define(function (require, exports, module) {
     ElmHintProvider.prototype.insertHint = function (hint) {
         var cursor = this.editor.getCursorPos(),
             currentToken = this.editor._codeMirror.getTokenAt(cursor),
+            replaceStart,
+            replaceEnd;
+        if (currentToken.string.indexOf(".") === currentToken.string.length - 1) {
             replaceStart = {
                 line: cursor.line,
-                ch: currentToken.start
-            },
+                ch: currentToken.end
+            };
             replaceEnd = {
                 line: cursor.line,
                 ch: cursor.ch
             };
+        } else {
+            replaceStart = {
+                line: cursor.line,
+                ch: currentToken.start
+            };
+            replaceEnd = {
+                line: cursor.line,
+                ch: cursor.ch
+            };
+        }
+
 
         this.editor.document.replaceRange(hint.toString(), replaceStart, replaceEnd);
         return false;

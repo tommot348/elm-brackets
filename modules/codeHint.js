@@ -12,7 +12,8 @@ define(function (require, exports, module) {
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         ElmDomain = new NodeDomain("elmDomain",
             ExtensionUtils.getModulePath(module,
-                "../node/elmDomain"));
+                "../node/elmDomain")),
+        elmPackageJson = require("./elm-package-json"); // package-style naming to avoid collisions
 
 
     function ElmHintProvider() {
@@ -35,18 +36,21 @@ define(function (require, exports, module) {
     };
     ElmHintProvider.prototype.getHints = function (implicitChar) {
         var buffer = "",
-            curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
+            curOpenDir = elmPackageJson.getElmPackagePath(),
             curOpenFile = DocumentManager.getCurrentDocument().file._path,
             result = $.Deferred(),
             cursor = this.editor.getCursorPos(),
             activeToken = TokenUtils.getInitialContext(this.editor._codeMirror, cursor);
-        ElmDomain.exec("hint",
-            activeToken.token.string,
-            curOpenFile,
-            curOpenDir,
-            brackets.platform === "win",
-            preferences.get("elm-oracleBinary"),
-            preferences.get("usePathOrCustom") === "path");
+        curOpenDir.done(function (path) {
+            ElmDomain.exec("hint",
+                activeToken.token.string,
+                curOpenFile,
+                path,
+                brackets.platform === "win",
+                preferences.get("elm-oracleBinary"),
+                preferences.get("usePathOrCustom") === "path");
+        });
+
         $(ElmDomain).on("hintout", function (evt, data) {
             buffer += data;
         });

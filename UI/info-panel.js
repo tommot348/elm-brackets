@@ -1,4 +1,3 @@
-
 /*global brackets,define,$*/
 /* All functions related to panel and status */
 define(function (require, exports) {
@@ -9,7 +8,7 @@ define(function (require, exports) {
         ExtensionStrings = require("../config/Strings"),
         IDs = require("../config/IDs"),
 
-        EditorManager =  brackets.getModule("editor/EditorManager"),
+        EditorManager = brackets.getModule("editor/EditorManager"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache"),
         DocumentManager = brackets.getModule("document/DocumentManager");
 
@@ -23,7 +22,9 @@ define(function (require, exports) {
 
     InfoPanel.prototype.init = function () {
         var infoPanelHtmlTemplate = require("text!../html/output-panel.html"),
-            infoPanelHtml = Mustache.render(infoPanelHtmlTemplate, {S: ExtensionStrings});
+            infoPanelHtml = Mustache.render(infoPanelHtmlTemplate, {
+                S: ExtensionStrings
+            });
 
         this.panelElement = $(infoPanelHtml);
         this.panelContentElement = $('.table tbody', this.panelElement);
@@ -37,6 +38,12 @@ define(function (require, exports) {
 
         this.status = $('#elm-status');
 
+        $(EditorManager).on('activeEditorChange', function () {
+            if (DocumentManager.getCurrentDocument().language.getId() !== "elm") {
+                this.hide();
+            }
+        }.bind(this));
+
         CommandManager.register(ExtensionStrings.SHOW_PANEL, IDs.SHOW_PANEL_ID, function () {
             this.toggle();
         }.bind(this));
@@ -47,16 +54,34 @@ define(function (require, exports) {
         }.bind(this));
 
         $('.build', this.panelElement).on('click', function () {
-            CommandManager.execute(IDs.BUILD_ID);
-        });
+            CommandManager.execute(IDs.BUILD_ID)
+                 .done(function (data) {
+                    this.appendOutput(data);
+                }.bind(this))
+                .fail(function (err) {
+                    this.appendOutput(err);
+                }.bind(this));
+        }.bind(this));
 
         $('.pkg', this.panelElement).on('click', function () {
-            CommandManager.execute(IDs.PKG_INSTALL_ID);
-        });
+            CommandManager.execute(IDs.PKG_INSTALL_ID)
+                .done(function (data) {
+                    this.appendOutput(data);
+                }.bind(this))
+                .fail(function (err) {
+                    this.appendOutput(err);
+                }.bind(this));
+        }.bind(this));
 
         $('.format', this.panelElement).on('click', function () {
-            CommandManager.execute(IDs.FORMAT_ID);
-        });
+            CommandManager.execute(IDs.FORMAT_ID)
+                 .done(function (data) {
+                    this.appendOutput(data);
+                }.bind(this))
+                .fail(function (err) {
+                    this.appendOutput(err);
+                }.bind(this));
+        }.bind(this));
 
         $('.clear', this.panelElement).on('click', function () {
             this.clear();
@@ -64,11 +89,11 @@ define(function (require, exports) {
 
         $('.preferences', this.panelElement).on('click', function () {
             CommandManager.execute(IDs.SHOW_PREFERENCES_DIALOG_ID);
-        }.bind(this));
+        });
 
         $('.project', this.panelElement).on('click', function () {
             CommandManager.execute(IDs.SHOW_PROJECT_DIALOG_ID);
-        }.bind(this));
+        });
 
         this.status.on('click', function () {
             this.toggle();

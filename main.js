@@ -40,7 +40,7 @@ define(function (require, exports, module) {
     projectSettingsDialog.init();
 
     //panel.show();
-
+    /*
     $(ElmDomain).on("buildout", function (evt, data) {
         buffer += data;
 
@@ -107,8 +107,8 @@ define(function (require, exports, module) {
         panel.appendOutput(buffer);
         buffer = "";
     });
-
-    require("elm-mode");
+    */
+    //require("elm-mode");
 
     LanguageManager.defineLanguage("elm", {
         name: "Elm",

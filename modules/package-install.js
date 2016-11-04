@@ -15,20 +15,28 @@ define(function (require, exports, module) {
         elmPackageJson = require("./elm-package-json"); // package-style naming to avoid collisions
 
     function handlePkg_install(pkg) {
+        var result = $.Deferred();
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
             var curOpenDir = elmPackageJson.getElmPackagePath(),
                 curOpenFile = DocumentManager.getCurrentDocument().file._path;
             pkg = pkg || "";
             CommandManager.execute("file.saveAll");
             curOpenDir.done(function (path) {
-                ElmDomain.exec("pkg_install",
+                (ElmDomain.exec("pkg_install",
                     pkg,
                     path,
                     brackets.platform === "win",
                     preferences.get("elmBinary"),
-                    preferences.get("usePathOrCustom") === "path");
+                    preferences.get("usePathOrCustom") === "path"))
+                    .done(function (data) {
+                        result.resolve(data);
+                    })
+                    .fail(function (data) {
+                        result.reject(data);
+                    });
             });
         }
+        return result.promise();
     }
 
     CommandManager.register("elm-package install", command, handlePkg_install);

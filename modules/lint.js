@@ -16,28 +16,62 @@ define(function (require, exports, module) {
 
     function lint() {
         var response = new $.Deferred(),
-            result = {errors : []},
+            result = {
+                errors: []
+            },
             curOpenDir = elmPackageJson.getElmPackagePath(),
-            curOpenFile = DocumentManager.getCurrentDocument().file._path,
-            buffer = "";
-        curOpenDir.done(function (path) {
-            ElmDomain.exec("lint",
-            curOpenFile,
-            path,
-            brackets.platform === "win",
-            preferences.get("elmBinary"),
-            preferences.get("usePathOrCustom") === "path");
-        });
+            curOpenFile = DocumentManager.getCurrentDocument().file._path;
 
-        $(ElmDomain).on("lintout", function (evt, data) {
+        (curOpenDir.done(function (path) {
+            (ElmDomain.exec("lint",
+                curOpenFile,
+                path,
+                brackets.platform === "win",
+                preferences.get("elmBinary"),
+                preferences.get("usePathOrCustom") === "path"))
+                .done(function (data) {
+                    var error = data.substr(data.indexOf("["), data.lastIndexOf("]") + 1),
+                        message = data.substr(data.lastIndexOf("]") + 1, data.length - error.length).trim(),
+                        errors = "";
+                    if (error.length) {
+                        //console.log ( error );
+                        try {
+                            errors = JSON.parse(error);
+                            errors.forEach(function (elem) {
+                                result.errors.push({
+                                    pos: {
+                                        line: elem.region.start.line - 1,
+                                        ch: elem.region.start.column - 1
+                                    },
+                                    message: elem.tag +
+                                        "\n" +
+                                        elem.overview +
+                                        "\n" +
+                                        elem.details,
+                                    type: elem.type === "error" ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING
+                                });
+                            });
+                        } catch (ex) {
+                            console.log(ex + " " + error);
+                        }
+
+                    }
+                    response.resolve(result);
+                })
+                .fail(function (err) {
+                    response.reject(err);
+                });
+        }));
+
+        /*$(ElmDomain).on("lintout", function (evt, data) {
             buffer += data;
-        });
+        });*/
 
         /*$(ElmDomain).on("linterr", function (evt, data) {
             buffer += data;
         });*/
 
-        $(ElmDomain).on("lintfinished", function (evt, data) {
+        /*$(ElmDomain).on("lintfinished", function (evt, data) {
             console.log("lint finished " + buffer);
             var error = buffer.substr(buffer.indexOf("["), buffer.lastIndexOf("]") + 1),
                 message = buffer.substr(buffer.lastIndexOf("]") + 1, buffer.length - error.length).trim(),
@@ -71,7 +105,7 @@ define(function (require, exports, module) {
             response.resolve(result);
             buffer = "";
 
-        });
+        });*/
         return response.promise();
     }
     CodeInspection.register("elm", {

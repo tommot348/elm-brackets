@@ -6,23 +6,25 @@
         os = require("os"),
         child;
 
-    function _runCommand(cmd, cwd, isWin, prefix, errback) {
+    function _runCommand(cmd, cwd, prefix, errback) {
         var spawn = require("child_process").spawn,
             args,
             enddir = cwd,
-            tempdir;
+            tempdir,
+            buffer = "";
         cmd = cmd.trim();
-        if (isWin) {
+        /*if (isWin) {
             args = ["/c", cmd];
             cmd = "cmd.exe";
         } else {
             args = ["-c", cmd];
             cmd = process.env.SHELL;
-        }
+        }*/
         console.log(JSON.stringify(args));
         child = spawn(cmd, args, {
             cwd: cwd,
-            env: process.env
+            env: process.env,
+            shell: true
         });
 
         child.stdout.on("data", function (data) {
@@ -31,7 +33,7 @@
                 try {
                     child.stdin.write("n" + os.EOL);
                     if (prefix === "lint") {
-                        _domainManager.emitEvent("elmDomain", prefix + "out", JSON.stringify([{
+                        /*_domainManager.emitEvent("elmDomain", prefix + "out", JSON.stringify([{
                             tag: "warning",
                             type: "warning",
                             overview: "Not all dependencies are satisfied",
@@ -46,39 +48,57 @@
                                     column: 0
                                 }
                             }
-                        }]));
+                        }]));*/
+                        buffer = JSON.stringify([{
+                            tag: "warning",
+                            type: "warning",
+                            overview: "Not all dependencies are satisfied",
+                            details: "Please run elm-package install or build the file",
+                            region: {
+                                start: {
+                                    line: 0,
+                                    column: 0
+                                },
+                                end: {
+                                    line: 0,
+                                    column: 0
+                                }
+                            }
+                        }]);
                     }
                     child.kill();
                 } catch (e) {
                     console.log(e);
                 }
             } else {
-                _domainManager.emitEvent("elmDomain", prefix + "out", data.toString());
+                //_domainManager.emitEvent("elmDomain", prefix + "out", data.toString());
+                buffer += data.toString();
             }
         });
 
         child.stderr.on("data", function (data) {
             //console.log(data.toString());
-            _domainManager.emitEvent("elmDomain", prefix + "err", data.toString());
+            //_domainManager.emitEvent("elmDomain", prefix + "err", data.toString());
+            errback(data.toString(), null);
         });
 
         child.on('exit', function (code) {
-            _domainManager.emitEvent("elmDomain", prefix + "finished");
-            errback(null, prefix + " success");
+            //_domainManager.emitEvent("elmDomain", prefix + "finished");
+            errback(null, buffer);
             //console.log("exit");
         });
 
         child.on('error', function (error) {
-            _domainManager.emitEvent("elmDomain", prefix + "finished");
-            errback(prefix + " failed", null);
+            //_domainManager.emitEvent("elmDomain", prefix + "finished");
+            errback(prefix + " failed " + error, null);
             //console.log("error");
         });
     }
 
-    function _build(file, cwd, isWin, binaryPath, usePATH, yes, out, warn, errback) {
+    function _build(file, cwd, binaryPath, usePATH, yes, out, warn, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "";
-        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + ((out.length > 0) ? ("--output " + out + " ") : " ") + (warn ? "--warn " : " ") + "--report json " +  file;
-        _runCommand(cmd, cwd, isWin, "build", errback);
+        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + ((out.length > 0) ? ("--output " + out + " ") : " ") + (warn ? "--warn " : " ") + "--report json " + file;
+        _runCommand(cmd, cwd, "build", errback);
     }
 
     function _docs(file, cwd, isWin, binaryPath, usePATH, docname, errback) {
@@ -92,25 +112,25 @@
     function _lint(file, cwd, isWin, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-make --warn --report json --output " + (isWin ? "nul " : "/dev/null ") + file;
-        _runCommand(cmd, cwd, isWin, "lint", errback);
+        _runCommand(cmd, cwd, "lint", errback);
     }
 
-    function _codeHint(str, file, cwd, isWin, binaryPath, usePATH, errback) {
+    function _codeHint(str, file, cwd, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-oracle " + file + " " + str;
-        _runCommand(cmd, cwd, isWin, "hint", errback);
+        _runCommand(cmd, cwd, "hint", errback);
     }
 
-    function _pkg_install(pkg, cwd, isWin, binaryPath, usePATH, errback) {
+    function _pkg_install(pkg, cwd, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-package install -y " + pkg;
-        _runCommand(cmd, cwd, isWin, "pkg_install", errback);
+        _runCommand(cmd, cwd, "pkg_install", errback);
     }
 
-    function _format(file, cwd, isWin, binaryPath, usePATH, out, yes, errback) {
+    function _format(file, cwd, binaryPath, usePATH, out, yes, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
             cmd = binpath + "elm-format " + (yes ? "--yes " : " ") + (out.length > 0 ? "--output " + out + " " : " ") + file;
-        _runCommand(cmd, cwd, isWin, "format", errback);
+        _runCommand(cmd, cwd, "format", errback);
     }
 
     function registerEvents(domainManager, prefix) {
@@ -131,7 +151,7 @@
             prefix + "finished", []);
     }
 
-     /**
+    /**
      * Initializes the domain
      * @param {DomainManager} domainManager The DomainManager for the server
      */
@@ -160,11 +180,6 @@
                         name: "cwd",
                         type: "string",
                         description: "Directory in which the command is executed"
-                    },
-                    {
-                        name: "isWin",
-                        type: "boolean",
-                        description: "Is Windows System ?"
                     },
                     {
                         name: "binaryPath",
@@ -262,11 +277,6 @@
                         description: "Directory in which the command is executed"
                     },
                     {
-                        name: "isWin",
-                        type: "boolean",
-                        description: "Is Windows System ?"
-                    },
-                    {
                         name: "binaryPath",
                         type: "string",
                         description: "path to the elm binary"
@@ -302,11 +312,6 @@
                         description: "Directory in which the command is executed"
                     },
                     {
-                        name: "isWin",
-                        type: "boolean",
-                        description: "Is Windows System ?"
-                    },
-                    {
                         name: "binaryPath",
                         type: "string",
                         description: "path to the elm binary"
@@ -339,11 +344,6 @@
                         name: "cwd",
                         type: "string",
                         description: "Directory in which the command is executed"
-                    },
-                    {
-                        name: "isWin",
-                        type: "boolean",
-                        description: "Is Windows System ?"
                     },
                     {
                         name: "binaryPath",

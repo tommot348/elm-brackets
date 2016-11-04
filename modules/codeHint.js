@@ -35,51 +35,73 @@ define(function (require, exports, module) {
         return (!CodeHintManager.isOpen()) && activeToken.token.string.length > 1;
     };
     ElmHintProvider.prototype.getHints = function (implicitChar) {
-        var buffer = "",
-            curOpenDir = elmPackageJson.getElmPackagePath(),
+        var curOpenDir = elmPackageJson.getElmPackagePath(),
             curOpenFile = DocumentManager.getCurrentDocument().file._path,
             result = $.Deferred(),
             cursor = this.editor.getCursorPos(),
             activeToken = TokenUtils.getInitialContext(this.editor._codeMirror, cursor);
         curOpenDir.done(function (path) {
-            ElmDomain.exec("hint",
+            (ElmDomain.exec("hint",
                 activeToken.token.string,
                 curOpenFile,
                 path,
                 brackets.platform === "win",
                 preferences.get("elm-oracleBinary"),
-                preferences.get("usePathOrCustom") === "path");
-        });
-
-        $(ElmDomain).on("hintout", function (evt, data) {
-            buffer += data;
-        });
-        $(ElmDomain).on("hintfinished", function (evt, data) {
-            console.log(buffer);
-            var hintsJson = "";
-            try {
-                hintsJson = JSON.parse(buffer);
-                result.resolve(
-                    {
-                        hints: hintsJson.map(function (elem) {
-                            return elem.name;
-                        }).sort(),
-                        match: "",
-                        selectInitial: true,
-                        handleWideResults: true
+                preferences.get("usePathOrCustom") === "path"))
+                .done(function (data) {
+                    try {
+                        var hintsJson = JSON.parse(data);
+                        result.resolve(
+                            {
+                                hints: hintsJson.map(function (elem) {
+                                    return elem.name;
+                                }).sort(),
+                                match: "",
+                                selectInitial: true,
+                                handleWideResults: true
+                            }
+                        );
+                    } catch (ex) {
+                        console.log(data);
+                        console.log(ex);
+                        result.reject(ex);
                     }
-                );
-            } catch (ex) {
-                console.log(buffer);
-                console.log(ex);
-                result.reject();
-            }
-            buffer = "";
-            $(ElmDomain).off("hintout");
-            $(ElmDomain).off("hintfinished");
-
+                })
+                .fail(function (err) {
+                    result.reject(err);
+                });
         });
-        return result;
+
+        /*        $(ElmDomain).on("hintout", function (evt, data) {
+                    buffer += data;
+                });
+                $(ElmDomain).on("hintfinished", function (evt, data) {
+                    console.log(buffer);
+                    var hintsJson = "";
+                    try {
+                        hintsJson = JSON.parse(buffer);
+                        result.resolve(
+                            {
+                                hints: hintsJson.map(function (elem) {
+                                    return elem.name;
+                                }).sort(),
+                                match: "",
+                                selectInitial: true,
+                                handleWideResults: true
+                            }
+                        );
+                    } catch (ex) {
+                        console.log(buffer);
+                        console.log(ex);
+                        result.reject();
+                        buffer="";
+                    }
+                    buffer = "";
+                    $(ElmDomain).off("hintout");
+                    $(ElmDomain).off("hintfinished");
+
+                });*/
+        return result.promise();
         /*return {
      hints: [activeToken.token.string + "bla", "blub"],
      match: "",

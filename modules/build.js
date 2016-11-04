@@ -17,6 +17,7 @@ define(function (require, exports, module) {
         elmPackageJson = require("./elm-package-json"); // package-style naming to avoid collisions
 
     function handleBuild() {
+        var result = $.Deferred();
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
             var curOpenDir = elmPackageJson.getElmPackagePath(),
                 curOpenFile = DocumentManager.getCurrentDocument().file._path;
@@ -32,15 +33,17 @@ define(function (require, exports, module) {
                     path + (preferences.get("buildout") === "" ? "index.html" : preferences.get("buildout")),
                     preferences.get("warn"));
                 $.when(execResult)
-                    .then(function () {
+                    .done(function (data) {
                         setTimeout(Inspector.Page.reload, 200);
+                        result.resolve(data);
                     })
                     .fail(function (err) {
                         console.log("build failed " + err);
+                        result.reject(err);
                     });
-
             });
         }
+        return result.promise();
     }
 
     CommandManager.register("elm-make current file", build, handleBuild);

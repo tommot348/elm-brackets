@@ -39,7 +39,10 @@ define(function (require, exports) {
         this.status = $('#elm-status');
 
         $(EditorManager).on('activeEditorChange', function () {
-            if (DocumentManager.getCurrentDocument().language.getId() !== "elm") {
+            var doc = DocumentManager.getCurrentDocument(),
+                lang = (doc ? doc.language : null),
+                id = (lang ? lang.getId() : "");
+            if (id !== "elm") {
                 this.hide();
             }
         }.bind(this));

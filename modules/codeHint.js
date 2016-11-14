@@ -39,6 +39,7 @@ define(function (require, exports, module) {
                 preferences.get("elm-oracleBinary"),
                 preferences.get("usePathOrCustom") === "path"))
                 .done(function (data) {
+                    console.log(data);
                     try {
                         var hintsJson = JSON.parse(data);
                         result.resolve(
@@ -58,10 +59,11 @@ define(function (require, exports, module) {
                     }
                 })
                 .fail(function (err) {
+                    console.log(err);
                     result.reject(err);
                 });
         });
-        return result.promise();
+        return result;
     };
     ElmHintProvider.prototype.insertHint = function (hint) {
         var cursor = this.editor.getCursorPos(),

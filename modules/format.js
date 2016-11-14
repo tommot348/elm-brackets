@@ -22,7 +22,6 @@ define(function (require, exports, module) {
             (ElmDomain.exec("format",
                 curOpenFile,
                 curOpenDir,
-                brackets.platform === "win",
                 preferences.get("elm-formatBinary"),
                 preferences.get("usePathOrCustom") === "path",
                 preferences.get("formatout"),

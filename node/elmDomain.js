@@ -6,20 +6,13 @@
         os = require("os"),
         child;
 
-    function _runCommand(cmd, cwd, prefix, errback) {
+    function _runCommand(cmd, args, cwd, prefix, errback) {
         var spawn = require("child_process").spawn,
-            args,
             enddir = cwd,
             tempdir,
             buffer = "";
         cmd = cmd.trim();
-        /*if (isWin) {
-            args = ["/c", cmd];
-            cmd = "cmd.exe";
-        } else {
-            args = ["-c", cmd];
-            cmd = process.env.SHELL;
-        }*/
+
         console.log(JSON.stringify(args));
         child = spawn(cmd, args, {
             cwd: cwd,
@@ -28,27 +21,11 @@
         });
 
         child.stdout.on("data", function (data) {
-            //console.log(data.toString());
+
             if (data.toString().indexOf("[Y") > -1) {
                 try {
                     child.stdin.write("n" + os.EOL);
                     if (prefix === "lint") {
-                        /*_domainManager.emitEvent("elmDomain", prefix + "out", JSON.stringify([{
-                            tag: "warning",
-                            type: "warning",
-                            overview: "Not all dependencies are satisfied",
-                            details: "Please run elm-package install or build the file",
-                            region: {
-                                start: {
-                                    line: 0,
-                                    column: 0
-                                },
-                                end: {
-                                    line: 0,
-                                    column: 0
-                                }
-                            }
-                        }]));*/
                         buffer = JSON.stringify([{
                             tag: "warning",
                             type: "warning",
@@ -71,34 +48,32 @@
                     console.log(e);
                 }
             } else {
-                //_domainManager.emitEvent("elmDomain", prefix + "out", data.toString());
                 buffer += data.toString();
             }
         });
 
         child.stderr.on("data", function (data) {
-            //console.log(data.toString());
-            //_domainManager.emitEvent("elmDomain", prefix + "err", data.toString());
             errback(data.toString(), null);
         });
 
         child.on('exit', function (code) {
-            //_domainManager.emitEvent("elmDomain", prefix + "finished");
             errback(null, buffer);
-            //console.log("exit");
         });
 
         child.on('error', function (error) {
-            //_domainManager.emitEvent("elmDomain", prefix + "finished");
             errback(prefix + " failed " + error, null);
-            //console.log("error");
         });
     }
 
     function _build(file, cwd, binaryPath, usePATH, yes, out, warn, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "";
-        var cmd = binpath + "elm-make " + (yes ? "--yes " : " ") + ((out.length > 0) ? ("--output " + out + " ") : " ") + (warn ? "--warn " : " ") + "--report json " + file;
-        _runCommand(cmd, cwd, "build", errback);
+        var cmd = binpath + "elm-make";
+        var args = [(yes ? "--yes " : ""),
+            ((out.length > 0) ? ("--output " + out + " ") : ""),
+            (warn ? "--warn " : ""),
+                   "--report json",
+                   file];
+        _runCommand(cmd, args, cwd, "build", errback);
     }
 
     function _docs(file, cwd, isWin, binaryPath, usePATH, docname, errback) {
@@ -111,26 +86,37 @@
 
     function _lint(file, cwd, isWin, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
-            cmd = binpath + "elm-make --warn --report json --output " + (isWin ? "nul " : "/dev/null ") + file;
-        _runCommand(cmd, cwd, "lint", errback);
+            cmd = binpath + "elm-make",
+            args = ["--warn",
+                  "--report json",
+                  "--output " + (isWin ? "nul" : "/dev/null"),
+                file];
+        _runCommand(cmd, args, cwd, "lint", errback);
     }
 
     function _codeHint(str, file, cwd, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
-            cmd = binpath + "elm-oracle " + file + " " + str;
-        _runCommand(cmd, cwd, "hint", errback);
+            cmd = binpath + "elm-oracle",
+            args = [file, str];
+        _runCommand(cmd, args, cwd, "hint", errback);
     }
 
     function _pkg_install(pkg, cwd, binaryPath, usePATH, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
-            cmd = binpath + "elm-package install -y " + pkg;
-        _runCommand(cmd, cwd, "pkg_install", errback);
+            cmd = binpath + "elm-package",
+            args = ["install",
+                   "-y",
+                   pkg];
+        _runCommand(cmd, args, cwd, "pkg_install", errback);
     }
 
     function _format(file, cwd, binaryPath, usePATH, out, yes, errback) {
         var binpath = !usePATH ? binaryPath + "/" : "",
-            cmd = binpath + "elm-format " + (yes ? "--yes " : " ") + (out.length > 0 ? "--output " + out + " " : " ") + file;
-        _runCommand(cmd, cwd, "format", errback);
+            cmd = binpath + "elm-format",
+            args = [(yes ? "--yes " : ""),
+                   (out.length > 0 ? "--output " + out : ""),
+                   file];
+        _runCommand(cmd, args, cwd, "format", errback);
     }
 
     function registerEvents(domainManager, prefix) {

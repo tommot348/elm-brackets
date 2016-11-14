@@ -105,8 +105,8 @@ define(function (require, exports) {
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
             this.panel.show();
             CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(true);
-            $('#elm-toolbar-icon').toggleClass("on");
-            $('#elm-toolbar-icon').toggleClass("off");
+            $('#elm-toolbar-icon').addClass("on");
+            $('#elm-toolbar-icon').removeClass("off");
             this.isShown = true;
         } else {
             console.log(DocumentManager.getCurrentDocument().language.getId());
@@ -116,8 +116,8 @@ define(function (require, exports) {
     InfoPanel.prototype.hide = function () {
         this.panel.hide();
         CommandManager.get(IDs.SHOW_PANEL_ID).setChecked(false);
-        $('#elm-toolbar-icon').toggleClass("on");
-        $('#elm-toolbar-icon').toggleClass("off");
+        $('#elm-toolbar-icon').removeClass("on");
+        $('#elm-toolbar-icon').addClass("off");
         this.isShown = false;
     };
 

@@ -26,7 +26,6 @@ define(function (require, exports, module) {
                 var execResult = ElmDomain.exec("build",
                     curOpenFile,
                     path,
-                    brackets.platform === "win",
                     preferences.get("elmBinary"),
                     preferences.get("usePathOrCustom") === "path",
                     preferences.get("buildyes"),

@@ -25,7 +25,6 @@ define(function (require, exports, module) {
                 (ElmDomain.exec("pkg_install",
                     pkg,
                     path,
-                    brackets.platform === "win",
                     preferences.get("elmBinary"),
                     preferences.get("usePathOrCustom") === "path"))
                     .done(function (data) {

@@ -38,7 +38,7 @@ define(function (require, exports) {
 
         this.status = $('#elm-status');
 
-        $(EditorManager).on('activeEditorChange', function () {
+        EditorManager.on('activeEditorChange', function () {
             var doc = DocumentManager.getCurrentDocument(),
                 lang = (doc ? doc.language : null),
                 id = (lang ? lang.getId() : "");
@@ -58,8 +58,31 @@ define(function (require, exports) {
 
         $('.build', this.panelElement).on('click', function () {
             CommandManager.execute(IDs.BUILD_ID)
-                 .done(function (data) {
-                    this.appendOutput(data);
+                .done(function (data) {
+                    //console.log(data);
+                    var error = data.substr(0, data.lastIndexOf("]") + 1),
+                        message = data.substr(data.lastIndexOf("]") + 1, data.length - error.length).trim(),
+                        errors = "";
+                    this.clear();
+                    if (error.length) {
+                        //console.log ( error );
+                        errors = JSON.parse(error);
+                        errors.forEach(function (elem) {
+                            this.appendOutput(elem.tag +
+                                "\n" +
+                                elem.overview +
+                                "\n" +
+                                elem.details,
+                                elem.region.start.line,
+                                elem.region.start.column);
+                        }.bind(this));
+                        this.updateStatus("error");
+                    } else {
+                        this.updateStatus("success");
+                    }
+                    if (message.length) {
+                        this.appendOutput(message);
+                    }
                 }.bind(this))
                 .fail(function (err) {
                     this.appendOutput(err);
@@ -138,16 +161,21 @@ define(function (require, exports) {
     };
 
     InfoPanel.prototype.appendOutput = function (text, line, column) {
-        var newElem = $("<tr data-line='" + line + "' data-column='" + column + "' style='display:table-row' class='elm-output'><td class='line-text'><pre class='elm-text'>" + text + "</pre><td></tr>");
         line = line || "0";
         column = column || "0";
-        newElem.click(function () {
+        var tr = $("<tr data-line='" + line + "' data-column='" + column + "' style='display:table-row' class='elm-output'></tr>"),
+            td = $("<td class='line-text'></td>"),
+            pre = $("<pre class='elm-text'></pre>");
+        pre.text(text);
+        td.append(pre);
+        tr.append(td);
+        tr.click(function () {
             var editor = EditorManager.getActiveEditor();
             editor.setCursorPos(Number($(this).attr("data-line")) - 1, Number($(this).attr("data-column")) - 1, true);
             editor.focus();
         });
 
-        $(this.panelContentElement).append(newElem);
+        $(this.panelContentElement).append(tr);
 
         this.scrollToBottom();
     };

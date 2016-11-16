@@ -13,7 +13,7 @@
             buffer = "";
         cmd = cmd.trim();
 
-        console.log(JSON.stringify(args));
+        //console.log(JSON.stringify(args));
         child = spawn(cmd, args, {
             cwd: cwd,
             env: process.env,
@@ -23,6 +23,7 @@
         child.stdout.on("data", function (data) {
 
             if (data.toString().indexOf("[Y") > -1) {
+                //console.log("Prompt");
                 try {
                     child.stdin.write("n" + os.EOL);
                     if (prefix === "lint") {
@@ -53,7 +54,7 @@
         });
 
         child.stderr.on("data", function (data) {
-            errback(data.toString(), null);
+            buffer += data.toString();
         });
 
         child.on('exit', function (code) {
@@ -74,14 +75,6 @@
                    "--report json",
                    file];
         _runCommand(cmd, args, cwd, "build", errback);
-    }
-
-    function _docs(file, cwd, isWin, binaryPath, usePATH, docname, errback) {
-        var binpath = !usePATH ? binaryPath + "/" : "",
-            cmd;
-        docname = docname.length > 0 ? docname : file + "-docs.js";
-        cmd = binpath + "elm-make --yes --output " + (isWin ? "nul " : "/dev/null ") + "--docs " + docname;
-
     }
 
     function _lint(file, cwd, isWin, binaryPath, usePATH, errback) {
@@ -358,11 +351,6 @@
                     }
                 ]
             );
-            registerEvents(domainManager, "build");
-            registerEvents(domainManager, "lint");
-            registerEvents(domainManager, "hint");
-            registerEvents(domainManager, "pkg_install");
-            registerEvents(domainManager, "format");
         }
         _domainManager = domainManager;
     }

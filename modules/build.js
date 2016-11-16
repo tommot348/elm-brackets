@@ -15,7 +15,25 @@ define(function (require, exports, module) {
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         build = require("../config/IDs").BUILD_ID,
         elmPackageJson = require("./elm-package-json"); // package-style naming to avoid collisions
-
+    function execBuild(path, file, result) {
+        var execResult = ElmDomain.exec("build",
+                    file,
+                    path,
+                    preferences.get("elmBinary"),
+                    preferences.get("usePathOrCustom") === "path",
+                    preferences.get("buildyes"),
+                    path + (preferences.get("buildout") === "" ? "index.html" : preferences.get("buildout")),
+                    preferences.get("warn"));
+        $.when(execResult)
+            .done(function (data) {
+                setTimeout(Inspector.Page.reload, 200);
+                result.resolve(data);
+            })
+            .fail(function (err) {
+                console.log("build failed " + err);
+                result.reject(err);
+            });
+    }
     function handleBuild() {
         var result = $.Deferred();
         if (DocumentManager.getCurrentDocument().language.getId() === "elm") {
@@ -23,23 +41,10 @@ define(function (require, exports, module) {
                 curOpenFile = DocumentManager.getCurrentDocument().file._path;
             CommandManager.execute("file.saveAll");
             curOpenDir.done(function (path) {
-                var execResult = ElmDomain.exec("build",
-                    curOpenFile,
-                    path,
-                    preferences.get("elmBinary"),
-                    preferences.get("usePathOrCustom") === "path",
-                    preferences.get("buildyes"),
-                    path + (preferences.get("buildout") === "" ? "index.html" : preferences.get("buildout")),
-                    preferences.get("warn"));
-                $.when(execResult)
-                    .done(function (data) {
-                        setTimeout(Inspector.Page.reload, 200);
-                        result.resolve(data);
-                    })
-                    .fail(function (err) {
-                        console.log("build failed " + err);
-                        result.reject(err);
-                    });
+                execBuild(path, curOpenFile, result);
+            }).fail(function (err) {
+                var path = DocumentManager.getCurrentDocument().file._parentPath;
+                execBuild(path, curOpenFile, result);
             });
         }
         return result.promise();

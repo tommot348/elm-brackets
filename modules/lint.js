@@ -59,9 +59,14 @@ define(function (require, exports, module) {
                     response.resolve(result);
                 })
                 .fail(function (err) {
+                    console.log(err);
                     response.reject(err);
                 });
-        }));
+        })
+        .fail(function (err) {
+                console.log(err);
+                response.reject(err);
+            }));
         return response.promise();
     }
     CodeInspection.register("elm", {

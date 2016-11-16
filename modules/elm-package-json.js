@@ -55,7 +55,8 @@ define(function (require, exports) {
                         if (ret.length > 1) {
                             openChooseDialog(ret, path);
                         } else {
-                            path.reject();
+                            console.log("no elm-package.json");
+                            path.reject("no elm-package.json");
                         }
                     } else {
                         fs.getFileForPath(ProjectManager.getProjectRoot().fullPath + ".elm-package-path").write(ret[0]._parentPath);

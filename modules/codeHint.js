@@ -39,7 +39,7 @@ define(function (require, exports, module) {
                 preferences.get("elm-oracleBinary"),
                 preferences.get("usePathOrCustom") === "path"))
                 .done(function (data) {
-                    console.log(data);
+                    //console.log(data);
                     try {
                         var hintsJson = JSON.parse(data);
                         result.resolve(
@@ -53,7 +53,7 @@ define(function (require, exports, module) {
                             }
                         );
                     } catch (ex) {
-                        console.log(data);
+                        //console.log(data);
                         console.log(ex);
                         result.reject(ex);
                     }

@@ -5,8 +5,11 @@ define({
     "PKG_INSTALL_ID"    :   "elm.pkg_install",
     "FORMAT_ID"         :   "elm.format",
     "SHOW_PANEL_ID"     :   "extension.elm.panel.show.id",
+    "SHOW_REPL_PANEL_ID":   "extension.elm.panel.repl.show.id",
     "PANEL_ID"          :   "elm-panel",
+    "REPL_PANEL_ID"     :   "elm-repl-panel",
     "LINTER_NAME"       :   "elmlint",
+    "REPL_ID"           :   "elm.repl",
     "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences",
     "SHOW_PROJECT_DIALOG_ID" : "elm.show_package_manager"
 });

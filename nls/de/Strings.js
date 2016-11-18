@@ -63,6 +63,10 @@ define({
     "INACTIVE_MSG"      :   "No Build",
     "PROGRESS"          :   "Progressing",
 
+    //REPL
+    "SHOW_REPL_PANEL"        :   "Zeige REPL",
+    "REPL_PANEL_HEADER"      :   "elm-repl Ausgabe",
+
     //SETTINGS DIALOG
     //General
     "SHOW_PREFERENCES_DIALOG":  "Show settings dialog",

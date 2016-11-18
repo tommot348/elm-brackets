@@ -4,13 +4,15 @@ define(function (require, exports) {
     "use strict";
     var WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         CommandManager = brackets.getModule("command/CommandManager"),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        EditorManager = brackets.getModule("editor/EditorManager"),
+        Mustache = brackets.getModule("thirdparty/mustache/mustache"),
+        DocumentManager = brackets.getModule("document/DocumentManager"),
 
         ExtensionStrings = require("../config/Strings"),
         IDs = require("../config/IDs"),
 
-        EditorManager = brackets.getModule("editor/EditorManager"),
-        Mustache = brackets.getModule("thirdparty/mustache/mustache"),
-        DocumentManager = brackets.getModule("document/DocumentManager");
+        preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS);
 
     function InfoPanel() {
         this.panelElement = null;
@@ -52,7 +54,6 @@ define(function (require, exports) {
         }.bind(this));
 
         $('.close', this.panelElement).on('click', function () {
-
             this.hide();
         }.bind(this));
 
@@ -67,6 +68,11 @@ define(function (require, exports) {
                     if (error.length) {
                         //console.log ( error );
                         errors = JSON.parse(error);
+                        if (preferences.get("warn") === false) {
+                            errors = errors.filter(function (err) {
+                                return err.type !== "warning";
+                            });
+                        }
                         errors.forEach(function (elem) {
                             this.appendOutput(elem.tag +
                                 "\n" +
@@ -119,6 +125,10 @@ define(function (require, exports) {
 
         $('.project', this.panelElement).on('click', function () {
             CommandManager.execute(IDs.SHOW_PROJECT_DIALOG_ID);
+        });
+
+        $(".repl", this.panelElement).on('click', function () {
+            CommandManager.execute(IDs.SHOW_REPL_PANEL_ID);
         });
 
         this.status.on('click', function () {

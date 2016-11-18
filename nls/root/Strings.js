@@ -56,6 +56,7 @@ define({
     "PKG_INSTALL_HOVER" :   "Install all dependencies for current file",
     "PREFERENCES_HOVER" :   "Open settings dialog",
     "PROJECT_DIALOG_HOVER" :   "Open Project Settings Dialog",
+    "REPL_HOVER"        :   "Open/Close REPL",
     
     // Status
     "STATUSBAR_NAME"    :   "Elm Build Status",
@@ -63,6 +64,10 @@ define({
     "INACTIVE_MSG"      :   "No Build",
     "PROGRESS"          :   "Progressing",
     
+    //REPL
+    "SHOW_REPL_PANEL"        :   "Show REPL Panel",
+    "REPL_PANEL_HEADER"      :   "elm-repl output",
+
     //SETTINGS DIALOG
     //General
     "SHOW_PREFERENCES_DIALOG":  "Show settings dialog",

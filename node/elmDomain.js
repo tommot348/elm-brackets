@@ -4,8 +4,7 @@
 
     var _domainManager,
         os = require("os"),
-        child;
-
+        repl = null;
     function _runCommand(cmd, args, cwd, prefix, errback) {
         var spawn = require("child_process").spawn,
             enddir = cwd,
@@ -14,7 +13,7 @@
         cmd = cmd.trim();
 
         //console.log(JSON.stringify(args));
-        child = spawn(cmd, args, {
+        var child = spawn(cmd, args, {
             cwd: cwd,
             env: process.env,
             shell: true
@@ -110,6 +109,41 @@
                    (out.length > 0 ? "--output " + out : ""),
                    file];
         _runCommand(cmd, args, cwd, "format", errback);
+    }
+
+    function _getREPL(cwd, binaryPath, usePATH) {
+        var binpath = !usePATH ? binaryPath + "/" : "",
+            cmd = binpath + "elm-repl",
+            spawn = require("child_process").spawn,
+            buffer = "";
+        cmd = cmd.trim();
+
+        //console.log(JSON.stringify(args));
+        var proc = spawn(cmd, [], {
+            cwd: cwd,
+            env: process.env,
+            shell: true
+        });
+        proc.stdout.on('data', function (data) {
+            _domainManager.emitEvent("elmDomain", "replout", data);
+        });
+        proc.stderr.on('data', function (data) {
+            _domainManager.emitEvent("elmDomain", "replerr", data);
+        });
+        proc.on('exit', function (code) {
+            _domainManager.emitEvent("elmDomain", "replfinished", code);
+        });
+        proc.on('error', function (err) {
+            _domainManager.emitEvent("elmDomain", "replfinished", err);
+        });
+        return proc;
+    }
+
+    function _sendToREPL(cwd, binaryPath, usePATH, data) {
+        if (repl === null) {
+            repl = _getREPL(cwd, binaryPath, usePATH);
+        }
+        repl.stdin.write(data);
     }
 
     function registerEvents(domainManager, prefix) {
@@ -351,7 +385,39 @@
                     }
                 ]
             );
+            domainManager.registerCommand(
+                "elmDomain", // domain name
+                "sendToREPL", // command name
+                _sendToREPL, // command handler function
+                false, // isAsync
+                "get REPL process",
+                [
+                    {
+                        name: "cwd",
+                        type: "string",
+                        description: "Directory in which the command is executed"
+                    },
+                    {
+                        name: "binaryPath",
+                        type: "string",
+                        description: "path to the elm binary"
+                    },
+                    {
+                        name: "usePATH",
+                        type: "boolean",
+                        description: "use PATH or custom paths"
+                    },
+                    {
+                        name: "data",
+                        type: "string",
+                        description: "repl input"
+                    }
+                ]
+            );
         }
+
+        registerEvents(domainManager, "repl");
+
         _domainManager = domainManager;
     }
 

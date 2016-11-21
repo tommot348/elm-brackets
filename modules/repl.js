@@ -9,12 +9,38 @@ define(function (require, exports, module) {
             ExtensionUtils.getModulePath(module,
                 "../node/elmDomain")),
         PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        EditorManager = brackets.getModule('editor/EditorManager'),
+        Menus = brackets.getModule("command/Menus"),
+        KeyBindingManager = brackets.getModule("command/KeyBindingManager"),
+
         ExtensionStrings = require("../config/Strings"),
         preferences = PreferencesManager.getExtensionPrefs(ExtensionStrings.EXTENSION_PREFS),
         repl = require("../config/IDs").REPL_ID,
+        replMarked = require("../config/IDs").REPL_MARKED_ID,
         elmPackageJson = require("./elm-package-json");
+
+    EditorManager.on('activeEditorChange', function () {
+        var doc = DocumentManager.getCurrentDocument(),
+            lang = (doc ? doc.language : null),
+            id = (lang ? lang.getId() : ""),
+            menu = Menus.getContextMenu(Menus.ContextMenuIds.EDITOR_MENU);
+        try {
+            menu.removeMenuItem(replMarked);
+        } catch (ex) {
+
+        }
+        try {
+            KeyBindingManager.removeBinding("Ctrl-R");
+        } catch (ex2) {
+
+        }
+        if (id === "elm") {
+            menu.addMenuItem(replMarked, "Ctrl-R");
+        }
+    }.bind(this));
+
     function _sendToREPL(cwd, data, result) {
-        ElmDomain.exec("sendToRepl",
+        ElmDomain.exec("sendToREPL",
                         cwd,
                         preferences.get("elmBinary"),
                         preferences.get("usePathOrCustom") === "path",
@@ -26,6 +52,7 @@ define(function (require, exports, module) {
                 result.reject(err);
             });
     }
+
     function sendToREPL(data) {
         var result = $.Deferred();
 
@@ -40,6 +67,16 @@ define(function (require, exports, module) {
 
         return result;
     }
-    CommandManager.register("get elm repl", repl, sendToREPL);
+
+    function sendMarkedToREPL() {
+        var text = (EditorManager.getActiveEditor().getSelectedText())
+            .replace(/\n/g, "\\\n");
+
+        sendToREPL(text);
+        sendToREPL(13);
+    }
+
+    CommandManager.register("send data to elm repl", repl, sendToREPL);
+    CommandManager.register("evaluate in elm repl", replMarked, sendMarkedToREPL);
     exports.command_id = repl;
 });

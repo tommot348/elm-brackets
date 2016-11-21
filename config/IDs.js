@@ -10,6 +10,7 @@ define({
     "REPL_PANEL_ID"     :   "elm-repl-panel",
     "LINTER_NAME"       :   "elmlint",
     "REPL_ID"           :   "elm.repl",
+    "REPL_MARKED_ID"           :   "elm.repl.marked",
     "SHOW_PREFERENCES_DIALOG_ID" : "elm.show_preferences",
     "SHOW_PROJECT_DIALOG_ID" : "elm.show_package_manager"
 });

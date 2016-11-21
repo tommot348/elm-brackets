@@ -46,13 +46,13 @@ define(function (require, exports, module) {
 
     projectSettingsDialog.init();
 
-    ElmDomain.on("replout", function (data) {
+    ElmDomain.on("replout", function (event, data) {
         repl.appendOutput(data);
     });
-    ElmDomain.on("replerr", function (err) {
-        console.error(err);
+    ElmDomain.on("replerr", function (event, err) {
+        repl.appendOutput(err);
     });
-    ElmDomain.on("replfinished", function (data) {
+    ElmDomain.on("replfinished", function (event, data) {
         console.log("repl finished with: " + data);
     });
     LanguageManager.defineLanguage("elm", {

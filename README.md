@@ -13,9 +13,9 @@ Then install the extension named: "Elm support for Brackets (forked from lepinay
 - elm-oracle support (= autocomplete; see notes below roadmap)
 - Preferences (configurable binary path, options, etc)
 - Project settings dialog (elm-package.json frontend)
+- REPL utilization
 
 #### Roadmap:  
-- REPL utilization
 - Docs preview
 - Refractoring
 

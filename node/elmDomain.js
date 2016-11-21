@@ -125,16 +125,18 @@
             shell: true
         });
         proc.stdout.on('data', function (data) {
-            _domainManager.emitEvent("elmDomain", "replout", data);
+            _domainManager.emitEvent("elmDomain", "replout", data.toString());
         });
         proc.stderr.on('data', function (data) {
-            _domainManager.emitEvent("elmDomain", "replerr", data);
+            _domainManager.emitEvent("elmDomain", "replerr", data.toString());
         });
         proc.on('exit', function (code) {
             _domainManager.emitEvent("elmDomain", "replfinished", code);
+            repl = null;
         });
         proc.on('error', function (err) {
             _domainManager.emitEvent("elmDomain", "replfinished", err);
+            repl = null;
         });
         return proc;
     }
@@ -143,6 +145,13 @@
         if (repl === null) {
             repl = _getREPL(cwd, binaryPath, usePATH);
         }
+        console.log(data);
+        if (data === 13) {
+            data = os.EOL;
+        } else {
+            data = Buffer.from(data);
+        }
+        //_domainManager.emitEvent("elmDomain", "replout", data.toString());
         repl.stdin.write(data);
     }
 

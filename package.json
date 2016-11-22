@@ -1,9 +1,9 @@
 {
     "name": "tommot348.elm",
     "title": "Elm support for Brackets (forked from lepinay/elm-brackets)",
-    "description": "Syntax highlight and current file build with console output.",
+    "description": "building, linting, autocomplete, formatting, repl, package manager, etc.",
     "homepage": "https://github.com/tommot348/elm-brackets",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "author": "tommot348 (https://github.com/tommot348)",
     "license": "BSD-3-Clause",
     "engines": {

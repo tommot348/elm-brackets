@@ -5,7 +5,7 @@
     "homepage": "https://github.com/tommot348/elm-brackets",
     "version": "2.1.0",
     "author": "tommot348 (https://github.com/tommot348)",
-    "license": "MIT",
+    "license": "BSD-3-Clause",
     "engines": {
         "brackets": ">=1.1.0"
     }

@@ -31,6 +31,7 @@ define(function (require, exports, module) {
     require("modules/package-install");
     require("modules/format");
     require("modules/repl");
+    require("modules/ast");
 
     require("config/preferences");
 

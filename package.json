@@ -3,7 +3,7 @@
     "title": "Elm support for Brackets (forked from lepinay/elm-brackets)",
     "description": "building, linting, autocomplete, formatting, repl, package manager, etc.",
     "homepage": "https://github.com/tommot348/elm-brackets",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "author": "tommot348 (https://github.com/tommot348)",
     "license": "BSD-3-Clause",
     "engines": {

@@ -46,6 +46,8 @@ define(function (require, exports) {
                 id = (lang ? lang.getId() : "");
             if (id !== "elm") {
                 this.hide();
+            } else {
+                CommandManager.execute(IDs.BUILD_AST_ID);
             }
         }.bind(this));
 
